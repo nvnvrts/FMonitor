@@ -99,7 +99,14 @@ BOOL CFMonitor2Doc::OnOpenDocument(LPCTSTR lpszPathName)
 
 				try
 				{
-					m_pData = loader.Load((char*)(m_pBase), size);
+					if( m_pData )
+					{
+						m_pData = loader.Load((char*)(m_pBase), size, m_pData);
+					}
+					else
+					{
+						m_pData = loader.Load((char*)(m_pBase), size);
+					}
 
 					CloseHandles();
 

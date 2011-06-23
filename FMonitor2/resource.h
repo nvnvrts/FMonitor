@@ -14,9 +14,12 @@
 #define ID_TOOL_SAVE_PRESET_AS          32773
 #define ID_TOOL_PRESET                  32780
 #define ID_TOOL_PRESET1                 32781
+#define ID_BUTTON32781                  32781
 #define ID_TOOL_PRESET2                 32782
 #define ID_TOOL_PRESET3                 32783
+#define ID_32783                        32783
 #define ID_TOOL_PRESET4                 32784
+#define ID_FILE_MERGE                   32784
 #define ID_TOOL_PRESET5                 32785
 #define ID_TOOL_PRESET6                 32786
 #define ID_TOOL_PRESET7                 32787
@@ -28,7 +31,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        131
-#define _APS_NEXT_COMMAND_VALUE         32775
+#define _APS_NEXT_COMMAND_VALUE         32785
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

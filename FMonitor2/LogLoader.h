@@ -198,7 +198,7 @@ public:
 	{
 	}
 
-	CFMLogData* ParseData();
+	CFMLogData* ParseData(CFMLogData* data = NULL);
 };
 
 //
@@ -211,6 +211,7 @@ public:
 
 public:
 	CFMLogData* Load(const char* pch, const size_t length);
+	CFMLogData* Load(const char* pch, const size_t length, CFMLogData* data);
 
 	void Reset();
 };

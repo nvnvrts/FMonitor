@@ -4,6 +4,7 @@
 #include "ChildFrm.h"
 #include "FMonitor2Doc.h"
 #include "FMonitor2View.h"
+#include <io.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -13,6 +14,7 @@ BEGIN_MESSAGE_MAP(CFMonitor2App, CWinApp)
 	ON_COMMAND(ID_APP_ABOUT, &CFMonitor2App::OnAppAbout)
 	ON_COMMAND(ID_FILE_NEW, &CFMonitor2App::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, &CFMonitor2App::OnFileOpen)
+	ON_COMMAND(ID_FILE_MERGE, &CFMonitor2App::OnFileMerge)
 	ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinApp::OnFilePrintSetup)
 END_MESSAGE_MAP()
 
@@ -123,4 +125,101 @@ void CFMonitor2App::OnFileNew()
 void CFMonitor2App::OnFileOpen()
 {
 	CWinApp::OnFileOpen();
+
+	//char szFilter[] = "Log File(*.log)|*.log"; //Filter 설정
+
+	//CFileDialog m_FileOpenDialog( TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_ALLOWMULTISELECT, szFilter );
+	//if( m_FileOpenDialog.DoModal() == IDOK )
+	//{
+	//	POSITION filePosition = m_FileOpenDialog.GetStartPosition();
+	//	while( filePosition )
+	//	{
+	//		OpenDocumentFile( m_FileOpenDialog.GetNextPathName(filePosition) );
+	//	}
+	//}
+}
+
+void CFMonitor2App::OnFileMerge()
+{
+	char szFilter[] = "Log File(*.log)|*.log"; //Filter 설정
+
+	CFileDialog m_FileOpenDialog( TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_ALLOWMULTISELECT, szFilter );
+	if( m_FileOpenDialog.DoModal() == IDOK )
+	{
+		char newname[256];
+		memset( newname, 0, sizeof(char)*256 );
+
+		POSITION filePosition = m_FileOpenDialog.GetStartPosition();
+		bool bnew = true;
+		CFile* newfile = NULL;
+		while( filePosition )
+		{
+			CString pathName = m_FileOpenDialog.GetNextPathName(filePosition);
+			
+			char* filename = pathName.GetBuffer();
+
+			// 새파일 만들기
+			
+			if( !newfile )
+			{
+				newfile = new CFile;
+
+				int pos = pathName.ReverseFind( '\\' );
+				strncpy( newname, filename, pos+16 );
+				strncpy( newname+pos+16, filename+pos+23, 15 );
+
+				if( !newfile->Open( newname, CFile::modeCreate | CFile::modeWrite | CFile::shareDenyNone, 0 ) )
+					return;
+			}
+			
+			FILE* infile = fopen(filename, "r");
+			if( infile )
+			{
+				if( bnew )
+				{
+					long length = filelength( fileno(infile) );
+					void* buf = malloc( length );
+					fread( buf, 1, length, infile );
+					newfile->Write( buf, length );
+					free(buf);
+				}
+				else
+				{
+					fpos_t filepos, filepos2;
+					fgetpos( infile, &filepos );
+					while( fgetc(infile) != '\n' )
+					{
+					}
+					fgetpos( infile, &filepos2 );
+					long linelen = filepos2 - filepos;
+					fseek( infile, -linelen, SEEK_CUR );
+					
+					char* pBuf = (char*)malloc( sizeof(char) * linelen );
+					while( 1 )
+					{
+						if( !fgets( pBuf, linelen, infile ) )
+							break;
+
+						if( *(pBuf+1) == 'D' )
+						{
+							newfile->Write( pBuf, strlen(pBuf) );
+						}
+
+					}
+					free(pBuf);
+				}
+				fclose( infile );
+			}
+						
+			bnew = false;
+		}
+
+		if( newfile )
+		{
+			newfile->Close();
+			delete newfile;
+		}
+
+		OpenDocumentFile( newname );
+	}
 }

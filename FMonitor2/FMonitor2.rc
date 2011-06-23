@@ -82,15 +82,8 @@ IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 
 IDR_MAINFRAME TOOLBAR  16, 15
 BEGIN
-    BUTTON      ID_FILE_SAVE
-    BUTTON      ID_EDIT_COPY
     BUTTON      ID_FILE_OPEN
-    SEPARATOR
-    BUTTON      ID_EDIT_CUT
-    BUTTON      ID_EDIT_PASTE
-    SEPARATOR
-    BUTTON      ID_TOOL_ZOOMIN
-    BUTTON      ID_TOOL_ZOOMOUT
+    BUTTON      ID_FILE_MERGE
     SEPARATOR
     BUTTON      ID_TOOL_ZOOMIN
     BUTTON      ID_TOOL_ZOOMOUT
@@ -107,8 +100,9 @@ BEGIN
     POPUP "파일(&F)"
     BEGIN
         MENUITEM "열기(&O)...\tCtrl+O",           ID_FILE_OPEN
+        MENUITEM "파일 합치기(&M)...\tCtrl+M",       ID_FILE_MERGE
         MENUITEM SEPARATOR
-        MENUITEM "최근에 사용한 파일",                  ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM "최근에 사용한 파일",                  ID_FILE_MRU_FILE1
         MENUITEM SEPARATOR
         MENUITEM "닫기(&C)",                      ID_FILE_CLOSE
         MENUITEM "끝내기(&X)",                     ID_APP_EXIT
@@ -191,11 +185,13 @@ BEGIN
     VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
     VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
     "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
+    "M",            ID_FILE_MERGE,          VIRTKEY, CONTROL, NOINVERT
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
     "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL, NOINVERT
     "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL, NOINVERT
     VK_F6,          ID_NEXT_PANE,           VIRTKEY, NOINVERT
     VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT, NOINVERT
+    "M",            ID_FILE_MERGE,          VIRTKEY, CONTROL, NOINVERT
 END
 
 
@@ -422,6 +418,11 @@ END
 STRINGTABLE 
 BEGIN
     AFX_IDS_PREVIEW_CLOSE   "인쇄 미리 보기 모드를 닫습니다.\n미리 보기 취소"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_MERGE           "선택한 파일들을 하나의 파일로 합칩니다.\n파일 합치기"
 END
 
 #endif    // 한국어 resources

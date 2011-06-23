@@ -17,6 +17,7 @@ public:
 public:
 	afx_msg void OnFileNew();
 	afx_msg void OnFileOpen();
+	afx_msg void OnFileMerge();
 	afx_msg void OnAppAbout();
 
 protected:

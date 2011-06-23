@@ -225,9 +225,17 @@ CFMCfgData* CFMCfgParser::ParseData()
 
 //
 
-CFMLogData* CFMLogParser::ParseData()
+CFMLogData* CFMLogParser::ParseData(CFMLogData* data /*=NULL*/)
 {
-	auto_ptr<CFMLogData> result(new CFMLogData());
+	CFMLogData* result;
+	if( data )
+	{
+		result = data;
+	}
+	else
+	{
+		result = new CFMLogData();
+	}
 
 	int v = 0;
 	int h = 0;
@@ -331,7 +339,11 @@ CFMLogData* CFMLogParser::ParseData()
 
 				while (true)
 				{
-					if (*m_current == '{')
+					if (*m_current == ',' || *m_current == '.')	 // merge시 .. 이 나오는 경우가 있음 ;;
+					{
+						Next();
+					}
+					else if (*m_current == '{')
 					{
 						Next();
 
@@ -344,7 +356,7 @@ CFMLogData* CFMLogParser::ParseData()
 
 						result->GetList(id)->Add(timestamp, number);
 
-						if (*m_current == ',')
+						if (*m_current == ',' || *m_current == '.' || *m_current == ' ')
 						{
 							Next();
 						}
@@ -374,7 +386,7 @@ CFMLogData* CFMLogParser::ParseData()
 	_snprintf(buff, 255, "v(%d), h(%d), k(%d), d(%d) line(%d).\n", v, h, k, d, m_line);
 	TRACE(buff);
 
-	return result.release();
+	return result;
 }
 
 //
@@ -395,4 +407,10 @@ CFMLogData* CLogLoader::Load(const char* pch, const size_t length)
 {
 	CFMLogParser parser(pch, length);
 	return parser.ParseData();
+}
+
+CFMLogData* CLogLoader::Load( const char* pch, const size_t length, CFMLogData* data )
+{
+	CFMLogParser parser(pch, length);
+	return parser.ParseData(data);
 }

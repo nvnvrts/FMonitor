@@ -14,11 +14,12 @@ CFMLogData::CFMLogData()
 	 m_zoom(0)
 {
 	memset(m_lists, 0, sizeof(m_lists));
-
+	
 	for (int i = 0; i < MIN_LIST_SIZE; ++i)
 	{
 		m_lists[i] = new fmlog::List();
 	}
+	memset(&m_info, 0, sizeof(m_info));
 }
 
 CFMLogData::~CFMLogData()

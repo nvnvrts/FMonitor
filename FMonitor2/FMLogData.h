@@ -49,6 +49,7 @@ public:
 
 	void SetInfo(const Info* info)
 	{
+		memset(&m_info, 0, sizeof(m_info));
 		memcpy(&m_info, info, sizeof(m_info));
 	}
 
