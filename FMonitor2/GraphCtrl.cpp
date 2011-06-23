@@ -31,7 +31,9 @@ CGraphCtrl::CGraphCtrl(CGraphView* view,
 	 m_scale(1.0f),
 	 m_colorIdx(0),
 	 m_meter(CPoint(0, 0)),
-	 m_lines(0)
+	 m_lines(0),
+	 m_fixscaleIndex(-1),
+	 m_maxscaleIndex(15)
 {
 }
 
@@ -111,6 +113,7 @@ bool CGraphCtrl::AddData(const string& key, fmlog::List* list)
 
 	m_colorMap.insert(ColorMap::value_type(key, COLORS[m_colorIdx++ % 7]));
 
+	m_fixscaleIndex = -1;
 	return true;
 }
 
@@ -121,12 +124,17 @@ bool CGraphCtrl::RemoveData(const string& key)
 		if ((*it).first == key)
 		{
 			m_data.erase(it);
+			m_fixscaleIndex = -1;
+
+			if( m_data.size() < 1 )
+			{
+				m_view->CloseGraph(m_name);
+			}
 			return true;
 		}
 	}
 
 	m_colorMap.erase(key);
-
 	return false;
 }
 
@@ -236,20 +244,29 @@ void CGraphCtrl::UpdateLineData(int ox, int oy, int w, int h)
 	};
 
 	float scale = 1.0;
-
-	for (int i = 0; i < (sizeof(SCALES) / sizeof(float)); ++i)
+	int scaleIndex = 0;
+	m_maxscaleIndex = sizeof(SCALES) / sizeof(float);
+	for (int i = 0; i < m_maxscaleIndex; ++i)
 	{
 		scale = SCALES[i];
 		if (scale > max)
 		{
+			scaleIndex = i;
 			break;
 		}
 	}
-
-	m_scale = max > scale ? max : scale;
-
+	if( m_fixscaleIndex >= 0 && m_fixscaleIndex < m_maxscaleIndex )
+	{
+		scale = SCALES[m_fixscaleIndex];
+		m_scale = scale;
+	}
+	else
+	{
+		m_fixscaleIndex = scaleIndex;
+		m_scale = max > scale ? max : scale;
+	}
+	
 	// line
-
 	BOOST_FOREACH(const Item& item, m_data)
 	{
 		const string& key = item.first;
@@ -356,6 +373,7 @@ void CGraphCtrl::OnPaint()
 		dc.Draw3dRect(rectGraphs, RGB(0, 0, 0), RGB(0, 0, 0));
 	}
 
+	// rectClose
 	{
 		int x1 = rectGraphs.right - 12;
 		int y1 = rectGraphs.top + 3;
@@ -372,6 +390,78 @@ void CGraphCtrl::OnPaint()
 		dc.LineTo(x2, y2);
 		dc.MoveTo(x1, y2);
 		dc.LineTo(x2, y1);
+	}
+	
+	// rectScaleDown
+	{
+		int x1 = rectGraphs.right - 24;		// left
+		int y1 = rectGraphs.top + 3;		// top
+		int x2 = rectGraphs.right - 15;		// right
+		int y2 = rectGraphs.top + 12;		// bottom
+
+		CPen pen;
+		pen.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+		dc.SelectObject(&pen);
+
+		CFont font;
+		LOGFONT lf;
+		memset(&lf, 0, sizeof(LOGFONT));
+		lf.lfHeight = 12;
+		strcpy(lf.lfFaceName, "Arial");
+		VERIFY(font.CreateFontIndirect(&lf));
+		dc.SelectObject(&font);
+
+		dc.SetBkColor(RGB(255, 255, 255));
+
+		{
+			CString str;
+			str.Format("%s", "-");
+			dc.TextOut(x1 + 3, y1 - 1, str);
+		}
+
+		m_rectScaleDown.SetRect(x1, y1, x2, y2);
+
+		dc.MoveTo(x1, y1);
+		dc.LineTo(x2, y1);
+		dc.LineTo(x2, y2);
+		dc.LineTo(x1, y2);
+		dc.LineTo(x1, y1);
+	}
+
+	// rectScaleUp
+	{
+		int x1 = rectGraphs.right - 36;		// left
+		int y1 = rectGraphs.top + 3;		// top
+		int x2 = rectGraphs.right - 27;		// right
+		int y2 = rectGraphs.top + 12;		// bottom
+
+		CPen pen;
+		pen.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+		dc.SelectObject(&pen);
+
+		CFont font;
+		LOGFONT lf;
+		memset(&lf, 0, sizeof(LOGFONT));
+		lf.lfHeight = 12;
+		strcpy(lf.lfFaceName, "Arial");
+		VERIFY(font.CreateFontIndirect(&lf));
+		dc.SelectObject(&font);
+
+		dc.SetBkColor(RGB(255, 255, 255));
+
+		{
+			CString str;
+			str.Format("%s", "+");
+			dc.TextOut(x1 + 2, y1 - 1, str);
+		}
+
+		m_rectScaleUp.SetRect(x1, y1, x2, y2);
+
+		dc.MoveTo(x1, y1);
+		dc.LineTo(x2, y1);
+		dc.LineTo(x2, y2);
+		dc.LineTo(x1, y2);
+		dc.LineTo(x1, y1);
 	}
 
 	{
@@ -490,5 +580,17 @@ void CGraphCtrl::OnLButtonUp(UINT nFlags, CPoint point)
 	if (m_rectClose.PtInRect(point))
 	{
 		m_view->CloseGraph(m_name);
+	}
+	else if( m_rectScaleDown.PtInRect(point))
+	{
+		if( m_fixscaleIndex > 0 )
+			m_fixscaleIndex -= 1;
+		Invalidate();
+	}
+	else if( m_rectScaleUp.PtInRect(point))
+	{
+		if( m_fixscaleIndex < m_maxscaleIndex - 1 )
+			m_fixscaleIndex += 1;
+		Invalidate();
 	}
 }

@@ -23,8 +23,12 @@ class CGraphCtrl : public CWnd
 	int m_offset;
 	int m_zoom;
 	float m_scale;
+	int m_fixscaleIndex;
+	int m_maxscaleIndex;
 	DataList m_data;
 	CRect m_rectClose;
+	CRect m_rectScaleUp;
+	CRect m_rectScaleDown;
 	int m_colorIdx;
 	ColorMap m_colorMap;
 	CPoint m_meter;

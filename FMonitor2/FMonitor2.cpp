@@ -141,7 +141,7 @@ void CFMonitor2App::OnFileOpen()
 
 void CFMonitor2App::OnFileMerge()
 {
-	char szFilter[] = "Log File(*.log)|*.log"; //Filter 설정
+	char szFilter[] = "Log File(*.log)|*.log||"; //Filter 설정
 
 	CFileDialog m_FileOpenDialog( TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_ALLOWMULTISELECT, szFilter );
 	if( m_FileOpenDialog.DoModal() == IDOK )
