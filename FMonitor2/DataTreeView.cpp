@@ -106,6 +106,7 @@ void CDataTreeView::OnInitialUpdate()
 	}
 
 	GetTreeCtrl().SortChildren(root);
+	GetTreeCtrl().Expand(root, TVE_EXPAND);
 }
 
 void CDataTreeView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)

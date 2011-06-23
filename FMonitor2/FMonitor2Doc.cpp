@@ -85,48 +85,57 @@ BOOL CFMonitor2Doc::OnOpenDocument(LPCTSTR lpszPathName)
 						 FILE_FLAG_RANDOM_ACCESS,
 						 0);
 
-	if (m_hFile != INVALID_HANDLE_VALUE)
+	if (m_hFile == INVALID_HANDLE_VALUE)
 	{
-		DWORD size = GetFileSize(m_hFile, NULL);
-
-		m_hMap = CreateFileMapping(m_hFile, NULL, PAGE_READONLY, 0, 0, NULL);
-		if (m_hMap != NULL)
-		{
-			m_pBase = MapViewOfFile(m_hMap, FILE_MAP_READ, 0, 0, 0);
-			if (m_pBase != NULL)
-			{
-				CLogLoader loader;
-
-				try
-				{
-					if( m_pData )
-					{
-						m_pData = loader.Load((char*)(m_pBase), size, m_pData);
-					}
-					else
-					{
-						m_pData = loader.Load((char*)(m_pBase), size);
-					}
-
-					CloseHandles();
-
-					return TRUE;
-				}
-
-				catch (Error& e)
-				{
-					AfxMessageBox(e.GetReason().c_str(), MB_OK);
-
-					CloseHandles();
-
-					return FALSE;
-				}
-			}
-		}
+		return FALSE;
 	}
 
-	CloseHandles();
+	try
+	{
+		DWORD size = GetFileSize(m_hFile, NULL);
+		if (size == 0)
+		{
+			throw Error("file is empty!");
+		}
 
+		m_hMap = CreateFileMapping(m_hFile, NULL, PAGE_READONLY, 0, 0, NULL);
+		if (m_hMap == NULL)
+		{
+			throw Error("can't map the file!");
+		}
+
+		m_pBase = MapViewOfFile(m_hMap, FILE_MAP_READ, 0, 0, 0);
+		if (m_pBase == NULL)
+		{
+			throw Error("can't view the file!");
+		}
+
+		CLogLoader loader;
+		if( m_pData )
+		{
+			m_pData = loader.Load((char*)(m_pBase), size, m_pData);
+		}
+		else
+		{
+			m_pData = loader.Load((char*)(m_pBase), size);
+		}
+
+		CloseHandles();
+
+		return TRUE;
+	}
+	catch (Error& e)
+	{
+		AfxMessageBox(e.GetReason().c_str(), MB_OK);
+
+		CloseHandles();
+
+		return FALSE;
+	}
+}
+
+BOOL CFMonitor2Doc::OnSaveDocument(LPCSTR lpszPathname)
+{
 	return FALSE;
 }
 
