@@ -77,6 +77,7 @@ void CConfigTreeView::OnInitialUpdate()
 	AddTable(root, data->GetConfig());
 
 	GetTreeCtrl().SortChildren(root);
+	GetTreeCtrl().Expand(root, TVE_EXPAND);
 }
 
 void CConfigTreeView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
