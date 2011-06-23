@@ -159,7 +159,6 @@ void CFMonitor2App::OnFileMerge()
 			char* filename = pathName.GetBuffer();
 
 			// 새파일 만들기
-			
 			if( !newfile )
 			{
 				newfile = new CFile;
@@ -169,42 +168,37 @@ void CFMonitor2App::OnFileMerge()
 				strncpy( newname+pos+16, filename+pos+23, 15 );
 
 				if( !newfile->Open( newname, CFile::modeCreate | CFile::modeWrite | CFile::shareDenyNone, 0 ) )
+				{
+					delete newfile;
 					return;
+				}
 			}
 			
 			FILE* infile = fopen(filename, "r");
 			if( infile )
 			{
-				if( bnew )
-				{
-					long length = filelength( fileno(infile) );
-					void* buf = malloc( length );
-					fread( buf, 1, length, infile );
-					newfile->Write( buf, length );
-					free(buf);
-				}
-				else
+				while( 1 )
 				{
 					fpos_t filepos, filepos2;
 					fgetpos( infile, &filepos );
-					while( fgetc(infile) != '\n' )
-					{
+					int ch = 0;
+					do {
+						ch = fgetc(infile);
 					}
+					while( ch != '\n' && ch != EOF );
+					
 					fgetpos( infile, &filepos2 );
 					long linelen = filepos2 - filepos;
 					fseek( infile, -linelen, SEEK_CUR );
-					
+
 					char* pBuf = (char*)malloc( sizeof(char) * linelen );
-					while( 1 )
+
+					if( !fgets( pBuf, linelen, infile ) )
+						break;
+
+					if( bnew || *(pBuf+1) == 'D' )
 					{
-						if( !fgets( pBuf, linelen, infile ) )
-							break;
-
-						if( *(pBuf+1) == 'D' )
-						{
-							newfile->Write( pBuf, strlen(pBuf) );
-						}
-
+						newfile->Write( pBuf, strlen(pBuf) );
 					}
 					free(pBuf);
 				}
