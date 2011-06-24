@@ -142,8 +142,14 @@ void CFMonitor2App::OnFileOpen()
 void CFMonitor2App::OnFileMerge()
 {
 	char szFilter[] = "Log File(*.log)|*.log||"; //Filter 설정
-
+	
 	CFileDialog m_FileOpenDialog( TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_ALLOWMULTISELECT, szFilter );
+
+	// 파일 목록 버퍼 사이즈 증가
+	char buf[10000] = {NULL,};
+	m_FileOpenDialog.GetOFN().lpstrFile = buf;
+	m_FileOpenDialog.GetOFN().nMaxFile = 10000;
+
 	if( m_FileOpenDialog.DoModal() == IDOK )
 	{
 		char newname[256];
