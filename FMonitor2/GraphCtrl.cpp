@@ -240,7 +240,7 @@ void CGraphCtrl::UpdateLineData(int ox, int oy, int w, int h)
 	for (int i = 0; i < (sizeof(SCALES) / sizeof(float)); ++i)
 	{
 		scale = SCALES[i];
-		if (scale > max)
+		if (scale >= max)
 		{
 			break;
 		}
