@@ -37,9 +37,10 @@ private:
 	Index m_index;
 	TimeLine m_timeline;
 	int m_zoom;
+	int m_step;
 	fmlog::List* m_lists[MAX_LIST_SIZE];
 
-	enum { MAX_ZOOM_LEVEL = 8 };
+	enum { MAX_ZOOM_LEVEL = 23 };
 	static int s_zooms[MAX_ZOOM_LEVEL];
 
 public:
@@ -101,20 +102,27 @@ public:
 
 	int GetZoom() const
 	{
-		return s_zooms[m_zoom];
+		return m_zoom;
 	}
 
 	float ZoomIn();
 	float ZoomOut();
+	float ZoomFit(int width);
 
 	bool CanZoomIn() const
 	{
-		return m_zoom != 0;
+		return m_step != 0;
 	}
 
 	bool CanZoomOut() const
 	{
-		return m_zoom < MAX_ZOOM_LEVEL;
+		return m_step < MAX_ZOOM_LEVEL;
+	}
+
+	bool CanZoomFit() const
+	{
+		// @todo not implemented yet
+		return true;
 	}
 
 	inline void AddTimeStamp(int timestamp)
@@ -147,5 +155,10 @@ public:
 	inline int GetLength()
 	{
 		return (m_timeline.size() / GetZoom());
+	}
+
+	inline int GetTimeLength()
+	{
+		return m_timeline.size();
 	}
 };

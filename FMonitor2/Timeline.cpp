@@ -45,6 +45,44 @@ void CTimeline::SetMeter(int x)
 	m_meter = x;
 }
 
+pair<int, int> CTimeline::GetRuler()
+{
+	int offset = -1;
+	int width = 10000;
+
+	CRect rc;
+	GetClientRect(rc);
+
+	CTime t0;
+
+	for (int x = 0; x < rc.Width(); x++)
+	{
+		int idx = m_zoom * (m_offset + x);
+		int len = m_timeline->size();
+
+		CTime t(m_timeline->at(idx));
+
+		if (t.GetMinute() == 0)
+		{
+			if (offset == -1)
+			{
+				t0 = t;
+				offset = x;
+			}
+			else
+			{
+				if (t0.GetHour() != t.GetHour())
+				{
+					width = x - offset;
+					break;
+				}
+			}
+		}
+	}
+
+	return make_pair(offset, width);
+}
+
 void CTimeline::OnPaint()
 {
 	int ox = 30;
@@ -84,24 +122,17 @@ void CTimeline::OnPaint()
 
 		dc.SetBkColor(RGB(192, 192, 192));
 
-		for (int x = 0; x < w; x += 240)
+		for (int x = 0; x < w; x++)
 		{
 			int idx = m_zoom * (m_offset + x);
 			int len = m_timeline->size();
 
-			if (idx < len)
-			{
-				CTime t(m_timeline->at(idx));
-				CString str = t.Format("%m/%d %H:%M:%S");
-				dc.TextOut(ox + x, oy + 3, str);
-			}
-			else
-			{
-				CTime t(m_timeline->back());
-				CString str = t.Format("%m/%d %H:%M:%S");
-				dc.TextOut(ox + x - (idx - len) / m_zoom, oy + 3, str);
+			CTime t(m_timeline->at(idx));
 
-				break;
+			if (t.GetMinute() == 0)
+			{
+				CString str = t.Format("%m/%d %H:%M");
+				dc.TextOut(ox + x, oy + 3, str);
 			}
 		}
 

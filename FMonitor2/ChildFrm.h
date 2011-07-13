@@ -34,6 +34,8 @@ public:
 	afx_msg void OnUpdateToolZoomIn(CCmdUI*);
 	afx_msg void OnToolZoomOut();
 	afx_msg void OnUpdateToolZoomOut(CCmdUI*);
+	afx_msg void OnToolZoomFit();
+	afx_msg void OnUpdateToolZoomFit(CCmdUI*);
 	afx_msg void OnToolSavePresetAs();
 	afx_msg void OnUpdateToolSavePresetAs(CCmdUI* pCmdUI);
 	afx_msg void OnToolPreset(UINT nID);

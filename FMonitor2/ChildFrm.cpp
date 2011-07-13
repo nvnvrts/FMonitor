@@ -20,6 +20,8 @@ BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWnd)
 	ON_UPDATE_COMMAND_UI(ID_TOOL_ZOOMIN, &CChildFrame::OnUpdateToolZoomIn)
 	ON_COMMAND(ID_TOOL_ZOOMOUT, &CChildFrame::OnToolZoomOut)
 	ON_UPDATE_COMMAND_UI(ID_TOOL_ZOOMOUT, &CChildFrame::OnUpdateToolZoomOut)
+	ON_COMMAND(ID_TOOL_ZOOMFIT, &CChildFrame::OnToolZoomFit)
+	ON_UPDATE_COMMAND_UI(ID_TOOL_ZOOMFIT, &CChildFrame::OnUpdateToolZoomFit)
 	ON_COMMAND(ID_TOOL_SAVE_PRESET_AS, &CChildFrame::OnToolSavePresetAs)
 	ON_UPDATE_COMMAND_UI(ID_TOOL_SAVE_PRESET_AS, &CChildFrame::OnUpdateToolSavePresetAs)
 	ON_COMMAND_RANGE(ID_TOOL_PRESET, ID_TOOL_PRESET9, &CChildFrame::OnToolPreset)
@@ -128,6 +130,31 @@ void CChildFrame::OnToolZoomOut()
 }
 
 void CChildFrame::OnUpdateToolZoomOut(CCmdUI* pCmdUI)
+{
+	CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetActiveDocument());
+	if (!doc)
+	{
+		pCmdUI->Enable(FALSE);
+	}
+	else
+	{
+		pCmdUI->Enable(doc->GetData()->CanZoomOut());
+	}
+}
+
+void CChildFrame::OnToolZoomFit()
+{
+	CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetActiveDocument());
+	if (doc)
+	{
+		CFMonitor2Doc::Hint hint;
+		hint.ratio = doc->GetData()->ZoomOut();
+
+		doc->UpdateAllViews(NULL, CFMonitor2Doc::UPDATE_ZOOM_FIT, (CObject*)(&hint));
+	}
+}
+
+void CChildFrame::OnUpdateToolZoomFit(CCmdUI* pCmdUI)
 {
 	CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetActiveDocument());
 	if (!doc)

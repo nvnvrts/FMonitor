@@ -11,7 +11,8 @@
 #define IDC_PRSET_NAME_EDIT             1000
 #define ID_TOOL_ZOOMIN                  32771
 #define ID_TOOL_ZOOMOUT                 32772
-#define ID_TOOL_SAVE_PRESET_AS          32773
+#define ID_TOOL_ZOOMFIT                 27773
+#define ID_TOOL_SAVE_PRESET_AS          32774
 #define ID_TOOL_PRESET                  32780
 #define ID_TOOL_PRESET1                 32781
 #define ID_BUTTON32781                  32781

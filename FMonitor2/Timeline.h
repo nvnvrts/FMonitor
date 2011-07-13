@@ -19,6 +19,7 @@ public:
 	void SetOffset(unsigned int offset);
 	void SetZoom(int zoom);
 	void SetMeter(int x);
+	pair<int, int> GetRuler();
 	void SetTimeline(const CFMLogData::TimeLine& m_timeline);
 
 protected:

@@ -231,12 +231,14 @@ void CGraphView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 	pScrollBar->SetScrollPos(curpos);
 
+	m_timeline.SetOffset(curpos);
+	pair<int, int> ruler = m_timeline.GetRuler();
+
 	BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
 	{
 		v.second->SetOffset(curpos);
+		v.second->SetRuler(ruler);
 	}
-
-	m_timeline.SetOffset(curpos);
 
 	Invalidate();
 }
@@ -302,15 +304,6 @@ void CGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 		{
 			float ratio = hint->ratio;
 
-			int zoom = doc->GetData()->GetZoom();
-
-			BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
-			{
-				v.second->SetZoom(zoom);
-			}
-
-			m_timeline.SetZoom(zoom);
-
 			CRect rect;
 			GetClientRect(&rect);
 
@@ -325,16 +318,65 @@ void CGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 
 			m_scroll.SetScrollInfo(&info);
 
+			int zoom = doc->GetData()->GetZoom();
+
+			m_timeline.SetZoom(zoom);
+			m_timeline.SetOffset(info.nPos);
+			pair<int, int> ruler = m_timeline.GetRuler();
+
 			BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
 			{
 				v.second->SetOffset(info.nPos);
+				v.second->SetZoom(zoom);
+				v.second->SetRuler(ruler);
 			}
-
-			m_timeline.SetOffset(info.nPos);
 
 			Invalidate();
 
 			TRACE3("graph view zoom... (%d/%d)(%.2f)\n", info.nPos, info.nMax, ratio);
+		}
+		break;
+
+	case CFMonitor2Doc::UPDATE_ZOOM_FIT:
+		{
+			CRect rect;
+			GetClientRect(&rect);
+
+			float width = rect.Width();
+			float length = doc->GetData()->GetTimeLength();
+
+			if (width > 0 && length > 0 && width < length)
+			{
+				doc->GetData()->ZoomFit(width);
+				int zoom = doc->GetData()->GetZoom();
+
+				m_timeline.SetOffset(0);
+				m_timeline.SetZoom(zoom);
+
+				pair<int, int> ruler = m_timeline.GetRuler();
+
+				BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
+				{
+					v.second->SetOffset(0);
+					v.second->SetZoom(zoom);
+					v.second->SetRuler(ruler);
+				}
+
+				int curpos = m_scroll.GetScrollPos();
+
+				SCROLLINFO info;
+				info.cbSize = sizeof(info);
+				info.fMask = SIF_RANGE | SIF_POS;
+				info.nMin = 0;
+				info.nMax = doc->GetData()->GetLength();
+				info.nPos = 0;
+
+				m_scroll.SetScrollInfo(&info);
+
+				Invalidate();
+
+				TRACE3("graph view zoom to fit... (%d/%d)(%d)\n", length, width, zoom);
+			}
 		}
 		break;
 

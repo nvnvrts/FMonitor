@@ -32,6 +32,7 @@ class CGraphCtrl : public CWnd
 	int m_colorIdx;
 	ColorMap m_colorMap;
 	CPoint m_meter;
+	pair<int, int> m_ruler;
 
 	DECLARE_DYNAMIC(CGraphCtrl)
 
@@ -53,6 +54,7 @@ public:
 	void SetOffset(unsigned int offset);
 	void SetZoom(int zoom);
 	void SetMeter(CPoint point);
+	void SetRuler(pair<int, int> ruler);
 
 	bool HasData(const string& key);
 	bool AddData(const string& key, fmlog::List* list);
