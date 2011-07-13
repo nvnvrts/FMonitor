@@ -31,7 +31,8 @@ CGraphCtrl::CGraphCtrl(CGraphView* view,
 	 m_scale(1.0f),
 	 m_colorIdx(0),
 	 m_meter(CPoint(0, 0)),
-	 m_lines(0)
+	 m_lines(0),
+	 m_ruler(make_pair(0, 100))
 {
 }
 
@@ -79,6 +80,11 @@ void CGraphCtrl::SetZoom(int zoom)
 void CGraphCtrl::SetMeter(CPoint point)
 {
 	m_meter = point;
+}
+
+void CGraphCtrl::SetRuler(pair<int, int> ruler)
+{
+	m_ruler = ruler;
 }
 
 bool CGraphCtrl::HasData(const string& key)
@@ -386,7 +392,7 @@ void CGraphCtrl::OnPaint()
 			dc.LineTo(ox + w, cy);
 		}
 
-		for (int x = 1; x < w; x += 200)
+		for (int x = m_ruler.first; x < w; x += m_ruler.second)
 		{
 			dc.MoveTo(ox + x, oy + h);
 			dc.LineTo(ox + x, oy);

@@ -40,7 +40,7 @@ private:
 	int m_step;
 	fmlog::List* m_lists[MAX_LIST_SIZE];
 
-	enum { MAX_ZOOM_LEVEL = 27 };
+	enum { MAX_ZOOM_LEVEL = 23 };
 	static int s_zooms[MAX_ZOOM_LEVEL];
 
 public:

@@ -231,12 +231,14 @@ void CGraphView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 	pScrollBar->SetScrollPos(curpos);
 
+	m_timeline.SetOffset(curpos);
+	pair<int, int> ruler = m_timeline.GetRuler();
+
 	BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
 	{
 		v.second->SetOffset(curpos);
+		v.second->SetRuler(ruler);
 	}
-
-	m_timeline.SetOffset(curpos);
 
 	Invalidate();
 }
@@ -302,15 +304,6 @@ void CGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 		{
 			float ratio = hint->ratio;
 
-			int zoom = doc->GetData()->GetZoom();
-
-			BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
-			{
-				v.second->SetZoom(zoom);
-			}
-
-			m_timeline.SetZoom(zoom);
-
 			CRect rect;
 			GetClientRect(&rect);
 
@@ -325,12 +318,18 @@ void CGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 
 			m_scroll.SetScrollInfo(&info);
 
+			int zoom = doc->GetData()->GetZoom();
+
+			m_timeline.SetZoom(zoom);
+			m_timeline.SetOffset(info.nPos);
+			pair<int, int> ruler = m_timeline.GetRuler();
+
 			BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
 			{
 				v.second->SetOffset(info.nPos);
+				v.second->SetZoom(zoom);
+				v.second->SetRuler(ruler);
 			}
-
-			m_timeline.SetOffset(info.nPos);
 
 			Invalidate();
 
@@ -349,15 +348,19 @@ void CGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 			if (width > 0 && length > 0 && width < length)
 			{
 				doc->GetData()->ZoomFit(width);
-
 				int zoom = doc->GetData()->GetZoom();
+
+				m_timeline.SetOffset(0);
+				m_timeline.SetZoom(zoom);
+
+				pair<int, int> ruler = m_timeline.GetRuler();
 
 				BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
 				{
+					v.second->SetOffset(0);
 					v.second->SetZoom(zoom);
+					v.second->SetRuler(ruler);
 				}
-
-				m_timeline.SetZoom(zoom);
 
 				int curpos = m_scroll.GetScrollPos();
 
@@ -369,13 +372,6 @@ void CGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 				info.nPos = 0;
 
 				m_scroll.SetScrollInfo(&info);
-
-				BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
-				{
-					v.second->SetOffset(0);
-				}
-
-				m_timeline.SetOffset(0);
 
 				Invalidate();
 
