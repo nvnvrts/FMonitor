@@ -84,7 +84,7 @@ void CTimeline::OnPaint()
 
 		dc.SetBkColor(RGB(192, 192, 192));
 
-		for (int x = 0; x < w; x += 240)
+		for (int x = 0; x < w; x += 200)
 		{
 			int idx = m_zoom * (m_offset + x);
 			int len = m_timeline->size();

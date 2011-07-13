@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;Z:\Firenze\Library\Libs\include\boost\boost-1_34_1&quot;;&quot;C:\Program Files (x86)\Codejock Software\MFC\Xtreme ToolkitPro v15.0.2\Source&quot;"
+				AdditionalIncludeDirectories="&quot;E:\Firenze\Library\Libs\include\boost\boost-1_34_1&quot;;&quot;C:\Program Files (x86)\Codejock Software\MFC\Xtreme ToolkitPro v15.0.2\Source&quot;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -133,7 +133,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;Z:\Firenze\Library\Libs\include\boost\boost-1_34_1&quot;;&quot;C:\Program Files (x86)\Codejock Software\MFC\Xtreme ToolkitPro v15.0.2\Source&quot;;&quot;$(INTEL_PC20_INSTALL_DIR)ipp\include&quot;"
+				AdditionalIncludeDirectories="&quot;E:\Firenze\Library\Libs\include\boost\boost-1_34_1&quot;;&quot;C:\Program Files (x86)\Codejock Software\MFC\Xtreme ToolkitPro v15.0.2\Source&quot;;&quot;$(INTEL_PC20_INSTALL_DIR)ipp\include&quot;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_IPP_PARALLEL_DYNAMIC;INTEL_SUITE_VERSION=PC20"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"

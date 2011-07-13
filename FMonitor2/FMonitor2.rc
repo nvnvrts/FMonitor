@@ -86,6 +86,7 @@ BEGIN
     SEPARATOR
     BUTTON      ID_TOOL_ZOOMIN
     BUTTON      ID_TOOL_ZOOMOUT
+    BUTTON      ID_TOOL_ZOOMFIT
 END
 
 
@@ -144,6 +145,7 @@ BEGIN
     BEGIN
         MENUITEM "Zoom In(&+)",                 ID_TOOL_ZOOMIN
         MENUITEM "Zoom Out(&-)",                ID_TOOL_ZOOMOUT
+        MENUITEM "Zoom To Fit(&=)",             ID_TOOL_ZOOMFIT
         MENUITEM SEPARATOR
         MENUITEM "도구 모음(&T)",                   ID_VIEW_TOOLBAR
         MENUITEM "상태 표시줄(&S)",                  ID_VIEW_STATUS_BAR
@@ -202,7 +204,7 @@ CAPTION "FMonitor2 정보"
 FONT 9, "MS 셸 대화 상자", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
-    LTEXT           "FMonitor2 버전 1.0",IDC_STATIC,40,10,119,8,SS_NOPREFIX
+    LTEXT           "FMonitor2 버전 1.1.0",IDC_STATIC,40,10,119,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2011 Nextplay Corporation",IDC_STATIC,40,25,119,8
     DEFPUSHBUTTON   "확인",IDOK,178,7,50,16,WS_GROUP
 END

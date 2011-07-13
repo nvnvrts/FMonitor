@@ -386,7 +386,7 @@ void CGraphCtrl::OnPaint()
 			dc.LineTo(ox + w, cy);
 		}
 
-		for (int x = 1; x < w; x += 240)
+		for (int x = 1; x < w; x += 200)
 		{
 			dc.MoveTo(ox + x, oy + h);
 			dc.LineTo(ox + x, oy);

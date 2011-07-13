@@ -338,6 +338,52 @@ void CGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 		}
 		break;
 
+	case CFMonitor2Doc::UPDATE_ZOOM_FIT:
+		{
+			CRect rect;
+			GetClientRect(&rect);
+
+			float width = rect.Width();
+			float length = doc->GetData()->GetTimeLength();
+
+			if (width > 0 && length > 0 && width < length)
+			{
+				doc->GetData()->ZoomFit(width);
+
+				int zoom = doc->GetData()->GetZoom();
+
+				BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
+				{
+					v.second->SetZoom(zoom);
+				}
+
+				m_timeline.SetZoom(zoom);
+
+				int curpos = m_scroll.GetScrollPos();
+
+				SCROLLINFO info;
+				info.cbSize = sizeof(info);
+				info.fMask = SIF_RANGE | SIF_POS;
+				info.nMin = 0;
+				info.nMax = doc->GetData()->GetLength();
+				info.nPos = 0;
+
+				m_scroll.SetScrollInfo(&info);
+
+				BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
+				{
+					v.second->SetOffset(0);
+				}
+
+				m_timeline.SetOffset(0);
+
+				Invalidate();
+
+				TRACE3("graph view zoom to fit... (%d/%d)(%d)\n", length, width, zoom);
+			}
+		}
+		break;
+
 	case CFMonitor2Doc::UPDATE_SAVE_PRESET:
 		{
 			fmcfg::Preset::List keys;
