@@ -79,7 +79,7 @@ pair<int, int> CTimeline::GetRuler()
 						break;
 					}
 				}
-		}
+			}
 		}
 	}
 
@@ -142,6 +142,7 @@ void CTimeline::OnPaint()
 		if (m_meter > rectTimeLine.left && m_meter < rectTimeLine.right)
 		{
 			int x = m_meter - rectTimeLine.left;
+
 			int idx = m_zoom * (m_offset + x);
 			int len = static_cast<int>(m_timeline->size());
 

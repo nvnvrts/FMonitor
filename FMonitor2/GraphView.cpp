@@ -92,6 +92,7 @@ void CGraphView::ToggleGraph(int id)
 			graph->AddData(key.second, list);
 			graph->SetOffset(m_scroll.GetScrollPos());
 			graph->SetZoom(doc->GetData()->GetZoom());
+			graph->SetRuler(m_timeline.GetRuler());
 
 			hint.id = id;
 			hint.color = graph->GetColor(key.second);
