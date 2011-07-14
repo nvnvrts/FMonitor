@@ -58,7 +58,7 @@ pair<int, int> CTimeline::GetRuler()
 	for (int x = 0; x < rc.Width(); x++)
 	{
 		int idx = m_zoom * (m_offset + x);
-		int len = m_timeline->size();
+		int len = static_cast<int>(m_timeline->size());
 
 		if (idx < len)
 		{
@@ -128,7 +128,7 @@ void CTimeline::OnPaint()
 		for (int x = 0; x < w; x++)
 		{
 			int idx = m_zoom * (m_offset + x);
-			int len = m_timeline->size();
+			int len = static_cast<int>(m_timeline->size());
 
 			CTime t(m_timeline->at(idx));
 
@@ -143,7 +143,7 @@ void CTimeline::OnPaint()
 		{
 			int x = m_meter - rectTimeLine.left;
 			int idx = m_zoom * (m_offset + x);
-			int len = m_timeline->size();
+			int len = static_cast<int>(m_timeline->size());
 
 			if (idx < len)
 			{

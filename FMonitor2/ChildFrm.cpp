@@ -60,8 +60,6 @@ const UINT CChildFrame::GetPreset()
 
 BOOL CChildFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
-	cs.dwExStyle |= WS_EX_NOINHERITLAYOUT;
-
 	if (!CMDIChildWnd::PreCreateWindow(cs))
 	{
 		return FALSE;

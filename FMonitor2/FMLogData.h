@@ -153,11 +153,11 @@ public:
 
 	inline int GetLength()
 	{
-		return (m_timeline.size() / GetZoom());
+		return (static_cast<int>(m_timeline.size()) / GetZoom());
 	}
 
 	inline int GetTimeLength()
 	{
-		return m_timeline.size();
+		return static_cast<int>(m_timeline.size());
 	}
 };

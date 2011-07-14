@@ -163,7 +163,7 @@ void CGraphView::UpdateLayout()
 	height += rect.Height();
 	m_timeline.MoveWindow(0, cy - height, cx, rect.Height());
 
-	size_t n = m_graphs.size();
+	int n = static_cast<int>(m_graphs.size());
 	if (n > 0)
 	{
 		int h = (cy - height) / n;
@@ -342,7 +342,7 @@ void CGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 			CRect rect;
 			GetClientRect(&rect);
 
-			float width = rect.Width();
+			float width = static_cast<float>(rect.Width());
 			float length = doc->GetData()->GetTimeLength();
 
 			if (width > 0 && length > 0 && width < length)
