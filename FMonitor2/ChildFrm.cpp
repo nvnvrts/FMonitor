@@ -60,6 +60,8 @@ const UINT CChildFrame::GetPreset()
 
 BOOL CChildFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
+	cs.dwExStyle |= WS_EX_NOINHERITLAYOUT;
+
 	if (!CMDIChildWnd::PreCreateWindow(cs))
 	{
 		return FALSE;
@@ -73,11 +75,11 @@ int CChildFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CMDIChildWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	if (!m_status.Create(this))
-	{
-		TRACE0("상태 표시줄을 만들지 못했습니다.\n");
-		return -1;
-	}
+//	if (!m_status.Create(this))
+//	{
+//		TRACE0("상태 표시줄을 만들지 못했습니다.\n");
+//		return -1;
+//	}
 
 	return 0;
 }

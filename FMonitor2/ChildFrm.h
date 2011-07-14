@@ -5,7 +5,7 @@ class CChildFrame : public CMDIChildWnd
 	UINT m_preset;
 
 	CSplitterWnd m_splitter;
-	CStatusBar m_status;
+//	CStatusBar m_status;
 
 	DECLARE_DYNCREATE(CChildFrame)
 
