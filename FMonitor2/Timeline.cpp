@@ -60,23 +60,26 @@ pair<int, int> CTimeline::GetRuler()
 		int idx = m_zoom * (m_offset + x);
 		int len = m_timeline->size();
 
-		CTime t(m_timeline->at(idx));
-
-		if (t.GetMinute() == 0)
+		if (idx < len)
 		{
-			if (offset == -1)
+			CTime t(m_timeline->at(idx));
+
+			if (t.GetMinute() == 0)
 			{
-				t0 = t;
-				offset = x;
-			}
-			else
-			{
-				if (t0.GetHour() != t.GetHour())
+				if (offset == -1)
 				{
-					width = x - offset;
-					break;
+					t0 = t;
+					offset = x;
 				}
-			}
+				else
+				{
+					if (t0.GetHour() != t.GetHour())
+					{
+						width = x - offset;
+						break;
+					}
+				}
+		}
 		}
 	}
 
