@@ -9,6 +9,7 @@ class CTimeline : public CWnd
 	int m_offset;
 	int m_zoom;
 	int m_meter;
+	int m_meterCount;
 
 	DECLARE_DYNAMIC(CTimeline)
 

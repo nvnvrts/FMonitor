@@ -17,7 +17,8 @@ CTimeline::CTimeline()
     :m_timeline(0),
 	 m_offset(0),
 	 m_zoom(1),
-	 m_meter(0)
+	 m_meter(0),
+	 m_meterCount(10)
 {
 }
 
@@ -53,12 +54,16 @@ pair<int, int> CTimeline::GetRuler()
 	CRect rc;
 	GetClientRect(rc);
 
+	// 단위 길이 결정
+	int unit_len = rc.Width() / m_meterCount;
+		
+	int timeline_len = m_timeline->size();
 	CTime t0;
-
 	for (int x = 0; x < rc.Width(); x++)
 	{
 		int idx = m_zoom * (m_offset + x);
-		int len = m_timeline->size();
+		if( idx > timeline_len )
+			break;
 
 		CTime t(m_timeline->at(idx));
 
@@ -73,8 +78,15 @@ pair<int, int> CTimeline::GetRuler()
 			{
 				if (t0.GetHour() != t.GetHour())
 				{
-					width = x - offset;
-					break;
+					if( x-offset < unit_len )
+					{
+						continue;
+					}
+					else
+					{
+						width = x - offset;
+						break;
+					}
 				}
 			}
 		}
@@ -122,18 +134,15 @@ void CTimeline::OnPaint()
 
 		dc.SetBkColor(RGB(192, 192, 192));
 
-		for (int x = 0; x < w; x++)
+		pair<int, int> ruler = GetRuler();
+		int start_offset = ruler.first;
+		int unit_len = ruler.second;
+		for( int x = start_offset; x < w; x = x + unit_len )
 		{
 			int idx = m_zoom * (m_offset + x);
-			int len = m_timeline->size();
-
 			CTime t(m_timeline->at(idx));
-
-			if (t.GetMinute() == 0)
-			{
-				CString str = t.Format("%m/%d %H:%M");
-				dc.TextOut(ox + x, oy + 3, str);
-			}
+			CString str = t.Format("%m/%d %H:%M");
+			dc.TextOut(ox + x, oy + 3, str);
 		}
 
 		if (m_meter > rectTimeLine.left && m_meter < rectTimeLine.right)
