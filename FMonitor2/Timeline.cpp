@@ -130,23 +130,41 @@ void CTimeline::OnPaint()
 			int idx = m_zoom * (m_offset + x);
 			int len = static_cast<int>(m_timeline->size());
 
-			CTime t(m_timeline->at(idx));
-
-			if (t.GetMinute() == 0)
+			if (idx >= len)
 			{
-				CString str = t.Format("%m/%d %H:%M");
-				dc.TextOut(ox + x, oy + 3, str);
+				break;
+			}
+			else
+			{
+				CTime t(m_timeline->at(idx));
+
+				if (t.GetMinute() == 0)
+				{
+					CString str = t.Format("%m/%d %H:%M");
+					dc.TextOut(ox + x, oy + 3, str);
+				}
 			}
 		}
 
-		if (m_meter > rectTimeLine.left && m_meter < rectTimeLine.right)
+		if (m_meter < rectTimeLine.left || m_meter > rectTimeLine.right)
+		{
+			TRACE3("timeline meter(%d) is out of (%d,%d)!\n",
+				   m_meter,
+				   rectTimeLine.left,
+				   rectTimeLine.right);
+		}
+		else
 		{
 			int x = m_meter - rectTimeLine.left;
 
 			int idx = m_zoom * (m_offset + x);
 			int len = static_cast<int>(m_timeline->size());
 
-			if (idx < len)
+			if (idx >= len)
+			{
+				TRACE2("timeline meter idx(%d) is out of len(%d)!", idx, len);
+			}
+			else
 			{
 				CPen pen2;
 				pen2.CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
