@@ -84,6 +84,12 @@ void CGraphView::ToggleGraph(int id)
 
 			hint.id = id;
 			hint.color = RGB(0, 0, 0);
+
+			if (graph->GetKeyList().empty())
+			{
+				CloseGraph(key.first);
+				return;
+			}
 		}
 		else
 		{
