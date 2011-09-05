@@ -88,7 +88,6 @@ void CGraphView::ToggleGraph(int id)
 			if (graph->GetKeyList().empty())
 			{
 				CloseGraph(key.first);
-				return;
 			}
 		}
 		else

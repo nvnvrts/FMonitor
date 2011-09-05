@@ -94,7 +94,7 @@ void CDataTreeView::OnInitialUpdate()
 			fmlog::List* list = data->GetList(w.second);
 
 			CString str;
-			str.Format("%s <%.1f><%.1f>", w.first.c_str(), list->GetAvg(), list->GetMax());
+			str.Format("%s (%.1f)<%.1f>", w.first.c_str(), list->GetAvg(), list->GetMax());
 
 			HTREEITEM item = GetTreeCtrl().InsertItem(str, parent);
 			GetTreeCtrl().SetItemData(item, w.second);
