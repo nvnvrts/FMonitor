@@ -185,14 +185,24 @@ void CGraphView::UpdateLayout()
 
 void CGraphView::OnMouseMove(CGraphCtrl* graph, UINT nFlags, CPoint point)
 {
+	BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
+	{
+		CGraphCtrl* g = v.second;
+		if (g != graph)
+		{
+			g->SetMeter(point);
+			g->Invalidate();
+		}
+	}
+
 	m_timeline.SetMeter(point.x);
 
-	CRect rect;
-	m_timeline.GetWindowRect(rect);
+//	CRect rect;
+//	m_timeline.GetWindowRect(rect);
+//	ScreenToClient(rect);
+//	InvalidateRect(rect);
 
-	ScreenToClient(rect);
-
-	InvalidateRect(rect);
+//	Invalidate();
 }
 
 int CGraphView::OnCreate(LPCREATESTRUCT lpCreateStruct)
