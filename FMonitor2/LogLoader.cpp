@@ -370,6 +370,8 @@ CFMLogData* CFMLogParser::ParseData()
 		m_line++;
 	}
 
+	result->Normalize();
+
 	char buff[255];
 	_snprintf(buff, 255, "v(%d), h(%d), k(%d), d(%d) line(%d).\n", v, h, k, d, m_line);
 	TRACE(buff);

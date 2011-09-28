@@ -97,3 +97,31 @@ float CFMLogData::ZoomFit(int width)
 
 	return 1.0f;
 }
+
+void CFMLogData::Normalize()
+{
+	TimeLine timeline;
+
+	if (!m_timeline.empty())
+	{
+		int first = m_timeline.front();
+		int last = m_timeline.back();
+		timeline.reserve(last - first);
+	}
+
+	BOOST_FOREACH(int timestamp, m_timeline)
+	{
+		if (!timeline.empty())
+		{
+			int last = timeline.back();
+			for (int n = last + 1; n < timestamp; n++)
+			{
+				timeline.push_back(n);
+			}
+		}
+
+		timeline.push_back(timestamp);
+	}
+
+	m_timeline = timeline;
+}

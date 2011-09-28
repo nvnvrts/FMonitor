@@ -139,6 +139,8 @@ public:
 		}
 	}
 
+	void Normalize();
+
 	inline fmlog::List* GetList(int id)
 	{
 		fmlog::List* list = m_lists[id];

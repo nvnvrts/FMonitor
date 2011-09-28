@@ -437,7 +437,6 @@ void CGraphCtrl::OnPaint()
 				CPen pen;
 				pen.CreatePen(PS_SOLID, 1, line.color);
 				dc.SelectObject(&pen);
-
 				dc.MoveTo(0, 0);
 				dc.Polyline(line.points, line.count);
 			}
