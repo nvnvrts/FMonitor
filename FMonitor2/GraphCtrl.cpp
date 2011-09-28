@@ -298,7 +298,9 @@ void CGraphCtrl::UpdateLineData(int ox, int oy, int w, int h)
 				{
 					zoom = 1;
 
-					y = oy + sum / m_zoom;
+					int ddy = sum / m_zoom;
+					if (ddy > 0) y = oy + ddy;
+					else y = h;
 
 					sum = 0.0f;
 
@@ -357,8 +359,6 @@ void CGraphCtrl::OnPaint()
 
 	{
 		dc.FillSolidRect(rectClient, RGB(255, 255, 255));
-
-		//dc.Draw3dRect(rectClient, RGB(0, 0, 0), RGB(0, 0, 0));
 		dc.Draw3dRect(rectGraphs, RGB(0, 0, 0), RGB(0, 0, 0));
 	}
 

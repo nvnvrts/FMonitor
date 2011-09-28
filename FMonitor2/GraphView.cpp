@@ -197,10 +197,10 @@ void CGraphView::OnMouseMove(CGraphCtrl* graph, UINT nFlags, CPoint point)
 
 	m_timeline.SetMeter(point.x);
 
-//	CRect rect;
-//	m_timeline.GetWindowRect(rect);
-//	ScreenToClient(rect);
-//	InvalidateRect(rect);
+	CRect rect;
+	m_timeline.GetWindowRect(rect);
+	ScreenToClient(rect);
+	InvalidateRect(rect);
 
 //	Invalidate();
 }

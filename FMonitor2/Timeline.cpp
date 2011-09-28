@@ -125,6 +125,8 @@ void CTimeline::OnPaint()
 
 		dc.SetBkColor(RGB(192, 192, 192));
 
+		int prev = 0;
+
 		for (int x = 0; x < w; x++)
 		{
 			int idx = m_zoom * (m_offset + x);
@@ -134,7 +136,7 @@ void CTimeline::OnPaint()
 			{
 				break;
 			}
-			else
+			else if (prev == 0 || x - prev >= 100)
 			{
 				CTime t(m_timeline->at(idx));
 
@@ -142,6 +144,7 @@ void CTimeline::OnPaint()
 				{
 					CString str = t.Format("%m/%d %H:%M");
 					dc.TextOut(ox + x, oy + 3, str);
+					prev = ox + x;
 				}
 			}
 		}
