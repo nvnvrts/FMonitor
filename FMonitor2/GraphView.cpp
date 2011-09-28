@@ -201,8 +201,6 @@ void CGraphView::OnMouseMove(CGraphCtrl* graph, UINT nFlags, CPoint point)
 	m_timeline.GetWindowRect(rect);
 	ScreenToClient(rect);
 	InvalidateRect(rect);
-
-//	Invalidate();
 }
 
 int CGraphView::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -312,6 +310,12 @@ void CGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	case CFMonitor2Doc::UPDATE_DATA_SELECTED:
 		{
 			ToggleGraph(hint->id);
+		}
+		break;
+
+	case CFMonitor2Doc::UPDATE_CLOSE:
+		{
+			CloseGraph(hint->str);
 		}
 		break;
 

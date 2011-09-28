@@ -27,6 +27,10 @@ protected:
 
 public:
 	afx_msg void OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNMRclick(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnMenuShowAll();
+	afx_msg void OnMenuShowIf();
+	afx_msg void OnMenuClose();
 
 protected:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);

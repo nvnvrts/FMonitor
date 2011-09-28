@@ -23,6 +23,9 @@
 #define ID_TOOL_PRESET7                 32787
 #define ID_TOOL_PRESET8                 32788
 #define ID_TOOL_PRESET9                 32789
+#define ID_DATATREE_MENU_SHOWALL        32790
+#define ID_DATATREE_MENU_SHOWIF         32791
+#define ID_DATATREE_MENU_CLOSE          32792
 
 // Next default values for new objects
 // 

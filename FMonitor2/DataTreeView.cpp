@@ -12,6 +12,9 @@ IMPLEMENT_DYNCREATE(CDataTreeView, CXTPTreeView)
 
 BEGIN_MESSAGE_MAP(CDataTreeView, CXTPTreeView)
 	ON_NOTIFY_REFLECT(NM_DBLCLK, &CDataTreeView::OnNMDblclk)
+	ON_NOTIFY_REFLECT(NM_RCLICK, &CDataTreeView::OnNMRclick)
+	ON_COMMAND(ID_DATATREE_MENU_SHOWALL, &CDataTreeView::OnMenuShowAll)
+	ON_COMMAND(ID_DATATREE_MENU_CLOSE, &CDataTreeView::OnMenuClose)
 END_MESSAGE_MAP()
 
 CDataTreeView::CDataTreeView()
@@ -33,39 +36,6 @@ void CDataTreeView::Dump(CDumpContext& dc) const
 	CXTPTreeView::Dump(dc);
 }
 #endif
-
-void CDataTreeView::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	HTREEITEM item = GetTreeCtrl().GetSelectedItem();
-	if (item != NULL)
-	{
-		int id = (int)(GetTreeCtrl().GetItemData(item));
-		if (id)
-		{
-			int index = 0;
-
-			HTREEITEM parent = GetTreeCtrl().GetParentItem(item);
-			if (parent)
-			{
-				HTREEITEM child = GetTreeCtrl().GetChildItem(parent);
-				while (child != NULL)
-				{
-					index++;
-					child = GetTreeCtrl().GetNextItem(child, TVGN_NEXT);
-				}
-			}
-
-			CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetDocument());
-
-			CFMonitor2Doc::Hint hint;
-			hint.id = id;
-
-			doc->UpdateAllViews(this, CFMonitor2Doc::UPDATE_DATA_SELECTED, (CObject*)(&hint));
-		}
-	}
-
-	*pResult = 0;
-}
 
 BOOL CDataTreeView::PreCreateWindow(CREATESTRUCT& cs)
 {
@@ -127,5 +97,95 @@ void CDataTreeView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 
 	default:
 		break;
+	}
+}
+
+void CDataTreeView::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	HTREEITEM item = GetTreeCtrl().GetSelectedItem();
+	if (item != NULL)
+	{
+		int id = (int)(GetTreeCtrl().GetItemData(item));
+		if (id)
+		{
+			CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetDocument());
+
+			CFMonitor2Doc::Hint hint;
+			hint.id = id;
+
+			doc->UpdateAllViews(this, CFMonitor2Doc::UPDATE_DATA_SELECTED, (CObject*)(&hint));
+		}
+	}
+
+	*pResult = 0;
+}
+
+void CDataTreeView::OnNMRclick(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	HTREEITEM item = GetTreeCtrl().GetSelectedItem();
+	if (item != NULL)
+	{
+		int id = (int)(GetTreeCtrl().GetItemData(item));
+		if (id)
+		{
+		}
+		else
+		{
+			CMenu menu;
+			if (menu.CreatePopupMenu())
+			{
+				menu.AppendMenu(MF_STRING, ID_DATATREE_MENU_SHOWALL, _T("Show All"));
+				//menu.AppendMenu(MF_STRING, ID_DATATREE_MENU_SHOWALL, _T("Show If ..."));
+				menu.AppendMenu(MF_STRING, ID_DATATREE_MENU_CLOSE, _T("Close"));
+
+				CPoint point;
+				GetCursorPos(&point);
+				menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+			}
+		}
+	}
+
+	*pResult = 0;
+}
+
+void CDataTreeView::OnMenuShowAll()
+{
+	HTREEITEM item = GetTreeCtrl().GetSelectedItem();
+	if (item != NULL)
+	{
+		CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetDocument());
+
+		HTREEITEM child = GetTreeCtrl().GetChildItem(item);
+		while (child != NULL)
+		{
+			int id = GetTreeCtrl().GetItemData(child);
+			if (id)
+			{
+				CFMonitor2Doc::Hint hint;
+				hint.id = id;
+
+				doc->UpdateAllViews(this, CFMonitor2Doc::UPDATE_DATA_SELECTED, (CObject*)(&hint));
+			}
+
+			child = GetTreeCtrl().GetNextItem(child, TVGN_NEXT);
+		}
+	}
+}
+
+void CDataTreeView::OnMenuShowIf()
+{
+}
+
+void CDataTreeView::OnMenuClose()
+{
+	HTREEITEM item = GetTreeCtrl().GetSelectedItem();
+	if (item != NULL)
+	{
+		CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetDocument());
+
+		CFMonitor2Doc::Hint hint;
+		hint.str = GetTreeCtrl().GetItemText(item);
+
+		doc->UpdateAllViews(this, CFMonitor2Doc::UPDATE_CLOSE, (CObject*)(&hint));
 	}
 }
