@@ -28,6 +28,7 @@ protected:
 		UPDATE_ZOOM_FIT,
 		UPDATE_ITEM_COLOR,
 		UPDATE_SAVE_PRESET,
+		UPDATE_GRAPH_STYLE,
 	};
 
 public:

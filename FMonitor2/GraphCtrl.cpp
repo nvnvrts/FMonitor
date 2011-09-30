@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <utility>
+#include <vector>
 #include <boost/foreach.hpp>
 #include "FMonitor2.h"
 #include "GraphView.h"
@@ -32,7 +33,8 @@ CGraphCtrl::CGraphCtrl(CGraphView* view,
 	 m_colorIdx(0),
 	 m_meter(CPoint(0, 0)),
 	 m_lines(0),
-	 m_ruler(make_pair(0, 100))
+	 m_ruler(make_pair(0, 100)),
+	 m_style(false)
 {
 }
 
@@ -85,6 +87,11 @@ void CGraphCtrl::SetMeter(CPoint point)
 void CGraphCtrl::SetRuler(pair<int, int> ruler)
 {
 	m_ruler = ruler;
+}
+
+void CGraphCtrl::ToggleStyle()
+{
+	m_style = !m_style;
 }
 
 bool CGraphCtrl::HasData(const string& key)
@@ -273,7 +280,10 @@ void CGraphCtrl::UpdateLineData(int ox, int oy, int w, int h)
 		float sum = 0;
 		int zoom = 1;
 
+		vector<pair<int, int> > timelog;
 		LPPOINT points = new POINT[m_timeline.size()];
+
+		bool log = false;
 
 		BOOST_FOREACH(const int timestamp, m_timeline)
 		{
@@ -285,6 +295,7 @@ void CGraphCtrl::UpdateLineData(int ox, int oy, int w, int h)
 			{
 				if ((*it).first == timestamp)
 				{
+					log = true;
 					dy = h * (1 - ((*it++).second / scale));
 				}
 
@@ -299,13 +310,25 @@ void CGraphCtrl::UpdateLineData(int ox, int oy, int w, int h)
 					zoom = 1;
 
 					int ddy = sum / m_zoom;
-					if (ddy > 0) y = oy + ddy;
-					else y = h;
+					if (ddy > 0)
+					{
+						y = oy + ddy;
+					}
+					else
+					{
+						y = h;
+					}
 
 					sum = 0.0f;
 
 					if (offset++ >= m_offset)
 					{
+						if (log)
+						{
+							log = false;
+							timelog.push_back(make_pair(x, y));
+						}
+
 						LPPOINT pt = &points[i++];
 						pt->x = x++;
 						pt->y = y;
@@ -322,6 +345,7 @@ void CGraphCtrl::UpdateLineData(int ox, int oy, int w, int h)
 		Line line;
 		line.points = points;
 		line.count = i;
+		line.timelog.swap(timelog);
 		line.color = m_colorMap[key];
 
 		lines->push_back(line);
@@ -434,9 +458,40 @@ void CGraphCtrl::OnPaint()
 		{
 			BOOST_FOREACH(Line& line, *m_lines)
 			{
-				CPen pen;
-				pen.CreatePen(PS_SOLID, 1, line.color);
-				dc.SelectObject(&pen);
+				if (m_style)
+				{
+					float r = GetRValue(line.color);
+					float g = GetGValue(line.color);
+					float b = GetBValue(line.color);
+
+					const float saturation = 0.33f;
+
+					if (r > g) 
+						if (r > b)
+							g = b = r * saturation;
+						else
+							r = g = b * saturation;
+					else
+						if (g > b)
+							r = b = g * saturation;
+						else
+							r = g = b * saturation;
+
+					CPen pen;
+					pen.CreatePen(PS_SOLID, 1, RGB(r, g, b));
+					dc.SelectObject(&pen);
+
+					typedef pair<int, int> Point;
+					BOOST_FOREACH(const Point& p, line.timelog)
+					{
+						dc.MoveTo(p.first, oy + h);
+						dc.LineTo(p.first, p.second);
+					}
+				}
+
+				CPen pen2;
+				pen2.CreatePen(PS_SOLID, 1, line.color);
+				dc.SelectObject(&pen2);
 				dc.MoveTo(0, 0);
 				dc.Polyline(line.points, line.count);
 			}

@@ -427,6 +427,17 @@ void CGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 		}
 		break;
 
+	case CFMonitor2Doc::UPDATE_GRAPH_STYLE:
+		{
+			BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
+			{
+				v.second->ToggleStyle();
+			}
+
+			Invalidate();
+		}
+		break;
+
 	default:
 		break;
 	}

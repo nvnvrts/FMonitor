@@ -11,21 +11,23 @@
 #define IDC_PRSET_NAME_EDIT             1000
 #define ID_TOOL_ZOOMIN                  32771
 #define ID_TOOL_ZOOMOUT                 32772
-#define ID_TOOL_ZOOMFIT                 27773
-#define ID_TOOL_SAVE_PRESET_AS          32774
-#define ID_TOOL_PRESET                  32780
-#define ID_TOOL_PRESET1                 32781
-#define ID_TOOL_PRESET2                 32782
-#define ID_TOOL_PRESET3                 32783
-#define ID_TOOL_PRESET4                 32784
-#define ID_TOOL_PRESET5                 32785
-#define ID_TOOL_PRESET6                 32786
-#define ID_TOOL_PRESET7                 32787
-#define ID_TOOL_PRESET8                 32788
-#define ID_TOOL_PRESET9                 32789
-#define ID_DATATREE_MENU_SHOWALL        32790
-#define ID_DATATREE_MENU_SHOWIF         32791
-#define ID_DATATREE_MENU_CLOSE          32792
+#define ID_TOOL_ZOOMFIT                 37773
+#define ID_TOOL_SHOW_LOGTIME            33000
+#define ID_TOOL_SAVE_PRESET_AS          33100
+#define ID_TOOL_PRESET                  34000
+#define ID_TOOL_PRESET1                 34001
+#define ID_TOOL_PRESET2                 34002
+#define ID_TOOL_PRESET3                 34003
+#define ID_TOOL_PRESET4                 34004
+#define ID_TOOL_PRESET5                 34005
+#define ID_TOOL_PRESET6                 34006
+#define ID_TOOL_PRESET7                 34007
+#define ID_TOOL_PRESET8                 34008
+#define ID_TOOL_PRESET9                 34009
+#define ID_DATATREE_MENU_SHOWALL        35000
+#define ID_DATATREE_MENU_SHOWIF         35001
+#define ID_DATATREE_MENU_CLOSE          35002
+
 
 // Next default values for new objects
 // 

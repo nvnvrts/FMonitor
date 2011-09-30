@@ -29,6 +29,7 @@ class CGraphCtrl : public CWnd
 	ColorMap m_colorMap;
 	CPoint m_meter;
 	pair<int, int> m_ruler;
+	bool m_style;
 
 	DECLARE_DYNAMIC(CGraphCtrl)
 
@@ -51,6 +52,7 @@ public:
 	void SetZoom(int zoom);
 	void SetMeter(CPoint point);
 	void SetRuler(pair<int, int> ruler);
+	void ToggleStyle();
 
 	bool HasData(const string& key);
 	bool AddData(const string& key, fmlog::List* list);
@@ -68,6 +70,7 @@ protected:
 		LPPOINT points;
 		int count;
 		COLORREF color;
+		vector<pair<int, int> > timelog;
 	};
 
 	typedef vector<Line> LineList;
