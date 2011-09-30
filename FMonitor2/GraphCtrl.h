@@ -29,13 +29,14 @@ class CGraphCtrl : public CWnd
 	ColorMap m_colorMap;
 	CPoint m_meter;
 	pair<int, int> m_ruler;
-	bool m_style;
+	int m_style;
 
 	DECLARE_DYNAMIC(CGraphCtrl)
 
 public:
 	CGraphCtrl(CGraphView* view,
 		       const string& name,
+			   int style,
 			   const CFMLogData::TimeLine& timeline);
 
 	virtual ~CGraphCtrl();
@@ -52,7 +53,7 @@ public:
 	void SetZoom(int zoom);
 	void SetMeter(CPoint point);
 	void SetRuler(pair<int, int> ruler);
-	void ToggleStyle();
+	void SetStyle(int style);
 
 	bool HasData(const string& key);
 	bool AddData(const string& key, fmlog::List* list);

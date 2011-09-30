@@ -22,6 +22,7 @@ BEGIN_MESSAGE_MAP(CGraphView, CView)
 END_MESSAGE_MAP()
 
 CGraphView::CGraphView()
+    :m_style(0)
 {
 }
 
@@ -62,7 +63,7 @@ void CGraphView::ToggleGraph(int id)
 	{
 		const CFMLogData::TimeLine& timeline = doc->GetData()->GetTimeLine();
 
-		graph = new CGraphCtrl(this, key.first, timeline);
+		graph = new CGraphCtrl(this, key.first, m_style, timeline);
 		graph->Create(NULL, NULL, WS_CHILD | WS_VISIBLE, CRect(0, 0, 0, 0), this, 0);
 
 		m_graphs.insert(GraphMap::value_type(key.first, graph));
@@ -429,9 +430,22 @@ void CGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 
 	case CFMonitor2Doc::UPDATE_GRAPH_STYLE:
 		{
+			if (m_style == 0)
+			{
+				m_style = 1;
+			}
+			else if (m_style == 1)
+			{
+				m_style = 0;
+			}
+			else
+			{
+				m_style = 0;
+			}
+
 			BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
 			{
-				v.second->ToggleStyle();
+				v.second->SetStyle(m_style);
 			}
 
 			Invalidate();

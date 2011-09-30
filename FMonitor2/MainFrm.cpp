@@ -241,6 +241,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("도구 모음을 만들지 못했습니다.\n");
 		return -1;
 	}
+	else
+	{
+		m_wndToolBar.SetButtonStyle(6, TBBS_CHECKBOX);
+	}
 
 	if (!m_wndStatusBar.Create(this) || !m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT)))
 	{

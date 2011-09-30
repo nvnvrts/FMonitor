@@ -23,9 +23,11 @@ END_MESSAGE_MAP()
 
 CGraphCtrl::CGraphCtrl(CGraphView* view,
 					   const string& name, 
+					   int style,
 					   const CFMLogData::TimeLine& timeline)
     :m_view(view),
 	 m_name(name),
+	 m_style(style),
 	 m_timeline(timeline),
 	 m_offset(0),
 	 m_zoom(1),
@@ -33,8 +35,7 @@ CGraphCtrl::CGraphCtrl(CGraphView* view,
 	 m_colorIdx(0),
 	 m_meter(CPoint(0, 0)),
 	 m_lines(0),
-	 m_ruler(make_pair(0, 100)),
-	 m_style(false)
+	 m_ruler(make_pair(0, 100))
 {
 }
 
@@ -89,9 +90,9 @@ void CGraphCtrl::SetRuler(pair<int, int> ruler)
 	m_ruler = ruler;
 }
 
-void CGraphCtrl::ToggleStyle()
+void CGraphCtrl::SetStyle(int style)
 {
-	m_style = !m_style;
+	m_style = style;
 }
 
 bool CGraphCtrl::HasData(const string& key)
@@ -458,7 +459,7 @@ void CGraphCtrl::OnPaint()
 		{
 			BOOST_FOREACH(Line& line, *m_lines)
 			{
-				if (m_style)
+				if (m_style == 1)
 				{
 					float r = GetRValue(line.color);
 					float g = GetGValue(line.color);

@@ -19,6 +19,8 @@ class CGraphView : public CView
 	CTimeline m_timeline;
 	CScrollBar m_scroll;
 
+	int m_style;
+
 	DECLARE_DYNCREATE(CGraphView)
 
 protected:
