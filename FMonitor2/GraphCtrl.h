@@ -24,12 +24,16 @@ class CGraphCtrl : public CWnd
 	int m_zoom;
 	float m_scale;
 	DataList m_data;
+	CRect m_rectMax;
+	CRect m_rectSaturation;
 	CRect m_rectClose;
 	int m_colorIdx;
 	ColorMap m_colorMap;
 	CPoint m_meter;
 	pair<int, int> m_ruler;
 	int m_style;
+	bool m_localMax;
+	bool m_saturation;
 
 	DECLARE_DYNAMIC(CGraphCtrl)
 

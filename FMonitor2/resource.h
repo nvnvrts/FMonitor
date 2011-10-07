@@ -11,7 +11,8 @@
 #define IDC_PRSET_NAME_EDIT             1000
 #define ID_TOOL_ZOOMIN                  32771
 #define ID_TOOL_ZOOMOUT                 32772
-#define ID_TOOL_ZOOMFIT                 37773
+#define ID_TOOL_ZOOMFIT                 32773
+#define ID_TOOL_MAX                     32774
 #define ID_TOOL_SHOW_LOGTIME            33000
 #define ID_TOOL_SAVE_PRESET_AS          33100
 #define ID_TOOL_PRESET                  34000

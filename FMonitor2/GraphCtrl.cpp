@@ -35,7 +35,9 @@ CGraphCtrl::CGraphCtrl(CGraphView* view,
 	 m_colorIdx(0),
 	 m_meter(CPoint(0, 0)),
 	 m_lines(0),
-	 m_ruler(make_pair(0, 100))
+	 m_ruler(make_pair(0, 100)),
+	 m_localMax(false),
+	 m_saturation(false)
 {
 }
 
@@ -92,7 +94,14 @@ void CGraphCtrl::SetRuler(pair<int, int> ruler)
 
 void CGraphCtrl::SetStyle(int style)
 {
-	m_style = style;
+	if (style == 1)
+	{
+		m_saturation = true;
+	}
+	else
+	{
+		m_saturation = false;
+	}
 }
 
 bool CGraphCtrl::HasData(const string& key)
@@ -219,16 +228,26 @@ void CGraphCtrl::UpdateLineData(int ox, int oy, int w, int h)
 
 					sum = 0;
 
-					if (offset++ >= m_offset)
+					if (m_localMax)
+					{
+						if (offset++ >= m_offset)
+						{
+							if (value > max)
+							{
+								max = value;
+							}
+
+							if (offset >= w + m_offset)
+							{
+								break;
+							}
+						}
+					}
+					else
 					{
 						if (value > max)
 						{
 							max = value;
-						}
-
-						if (offset >= w + m_offset)
-						{
-							break;
 						}
 					}
 				}
@@ -388,21 +407,45 @@ void CGraphCtrl::OnPaint()
 	}
 
 	{
-		int x1 = rectGraphs.right - 12;
+		int x1 = rectGraphs.right - 36;
 		int y1 = rectGraphs.top + 3;
-		int x2 = rectGraphs.right - 3;
+		int x2 = rectGraphs.right - 27;
 		int y2 = rectGraphs.top + 12;
 
-		m_rectClose.SetRect(x1, y1, x2, y2);
+		m_rectMax.SetRect(x1, y1, x2, y2);
 
-		dc.MoveTo(x1, y1);
-		dc.LineTo(x2, y1);
-		dc.LineTo(x2, y2);
-		dc.LineTo(x1, y2);
-		dc.LineTo(x1, y1);
-		dc.LineTo(x2, y2);
-		dc.MoveTo(x1, y2);
-		dc.LineTo(x2, y1);
+		if (m_localMax)
+		{
+			dc.FillSolidRect(&m_rectMax, RGB(255, 0, 0));
+		}
+		else
+		{
+			dc.FillSolidRect(&m_rectMax, RGB(255, 192, 192));
+		}
+
+		x1 = rectGraphs.right - 24;
+		y1 = rectGraphs.top + 3;
+		x2 = rectGraphs.right - 15;
+		y2 = rectGraphs.top + 12;
+
+		m_rectSaturation.SetRect(x1, y1, x2, y2);
+
+		if (m_saturation)
+		{
+			dc.FillSolidRect(&m_rectSaturation, RGB(0, 255, 0));
+		}
+		else
+		{
+			dc.FillSolidRect(&m_rectSaturation, RGB(192, 255, 192));
+		}
+
+		x1 = rectGraphs.right - 12;
+		y1 = rectGraphs.top + 3;
+		x2 = rectGraphs.right - 3;
+		y2 = rectGraphs.top + 12;
+
+		m_rectClose.SetRect(x1, y1, x2, y2);
+		dc.FillSolidRect(&m_rectClose, RGB(0, 0, 255));
 	}
 
 	{
@@ -459,7 +502,7 @@ void CGraphCtrl::OnPaint()
 		{
 			BOOST_FOREACH(Line& line, *m_lines)
 			{
-				if (m_style == 1)
+				if (m_saturation)
 				{
 					float r = GetRValue(line.color);
 					float g = GetGValue(line.color);
@@ -548,7 +591,17 @@ BOOL CGraphCtrl::OnMouseLeave()
 
 void CGraphCtrl::OnLButtonUp(UINT nFlags, CPoint point)
 {
-	if (m_rectClose.PtInRect(point))
+	if (m_rectMax.PtInRect(point))
+	{
+		m_localMax = !m_localMax;
+		Invalidate();
+	}
+	else if (m_rectSaturation.PtInRect(point))
+	{
+		m_saturation = !m_saturation;
+		Invalidate();
+	}
+	else if (m_rectClose.PtInRect(point))
 	{
 		m_view->CloseGraph(m_name);
 	}
