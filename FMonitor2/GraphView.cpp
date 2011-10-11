@@ -228,19 +228,64 @@ void CGraphView::OnSize(UINT nType, int cx, int cy)
 
 void CGraphView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
+	int minpos;
+	int maxpos;
+	pScrollBar->GetScrollRange(&minpos, &maxpos);
+	maxpos = pScrollBar->GetScrollLimit();
+
 	int curpos = pScrollBar->GetScrollPos();
 
 	switch (nSBCode)
 	{
-	case TB_THUMBPOSITION:
+	case SB_LEFT:
+		curpos = minpos;
+		break;
+
+	case SB_RIGHT:
+		curpos = maxpos;
+		break;
+
+	case SB_ENDSCROLL:
+		break;
+
+	case SB_LINELEFT:
+		if (curpos > minpos) curpos--;
+		break;
+
+	case SB_LINERIGHT:
+		if (curpos < maxpos) curpos++;
+		break;
+
+	case SB_PAGELEFT:
+		{
+			SCROLLINFO info;
+			pScrollBar->GetScrollInfo(&info, SIF_ALL);
+
+			if (curpos > minpos)
+			{
+				curpos = max(minpos, curpos - static_cast<int>(info.nPage));
+			}
+		}
+		break;
+
+	case SB_PAGERIGHT:
+		{
+			SCROLLINFO info;
+			pScrollBar->GetScrollInfo(&info, SIF_ALL);
+
+			if (curpos < maxpos)
+			{
+				curpos = min(maxpos, curpos + static_cast<int>(info.nPage));
+			}
+		}
+		break;
+
+	case SB_THUMBPOSITION:
 		curpos = nPos;
 		break;
 
-	case TB_THUMBTRACK:
+	case SB_THUMBTRACK:
 		curpos = nPos;
-		break;
-
-	case TB_ENDTRACK:
 		break;
 	}
 
