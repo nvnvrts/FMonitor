@@ -40,6 +40,13 @@ public:
 		string str;
 	};
 
+	struct Config
+	{
+		bool zoomFit;
+	};
+
+	Config m_config;
+
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
@@ -48,6 +55,16 @@ public:
 	CFMLogData* GetData()
 	{
 		return m_pData;
+	}
+
+	const Config* GetConfig() const
+	{
+		return &m_config;
+	}
+
+	void SetConfigZoomFit(bool enable)
+	{
+		m_config.zoomFit = enable;
 	}
 
 protected:

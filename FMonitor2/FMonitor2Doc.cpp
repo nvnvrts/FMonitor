@@ -19,6 +19,8 @@ CFMonitor2Doc::CFMonitor2Doc()
 	m_pBase = NULL;
 
 	m_pData = 0;
+
+	m_config.zoomFit = true;
 }
 
 CFMonitor2Doc::~CFMonitor2Doc()

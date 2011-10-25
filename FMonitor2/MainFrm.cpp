@@ -168,9 +168,9 @@ CString CMainFrame::DumpConfig()
 		for (i = 1, it = preset.keys.begin(); it != preset.keys.end(); ++i, ++it)
 		{
 			buf.AppendFormat(_T("\t\t[\"%d\"] = { [\"%s\"] = [[%s]], },\n"),
-				i,
-				(*it).first.c_str(),
-				(*it).second.c_str());
+				             i,
+							 (*it).first.c_str(),
+							 (*it).second.c_str());
 		}
 
 		buf += _T("\t},\n");
@@ -243,6 +243,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	else
 	{
+		m_wndToolBar.SetButtonStyle(4, TBBS_CHECKBOX);
 		m_wndToolBar.SetButtonStyle(6, TBBS_CHECKBOX);
 	}
 

@@ -224,6 +224,16 @@ void CGraphView::OnSize(UINT nType, int cx, int cy)
 	CView::OnSize(nType, cx, cy);
 
 	UpdateLayout();
+
+	CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetDocument());
+	if (doc)
+	{
+		const CFMonitor2Doc::Config* config = doc->GetConfig();
+		if (config->zoomFit)
+		{
+			OnUpdateZoomFit();
+		}
+	}
 }
 
 void CGraphView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
@@ -336,6 +346,63 @@ void CGraphView::OnInitialUpdate()
 	info.nTrackPos = 0;
 
 	m_scroll.SetScrollInfo(&info);
+
+	const CFMonitor2Doc::Config* config = doc->GetConfig();
+	if (config)
+	{
+		if (config->zoomFit)
+		{
+			OnUpdateZoomFit();
+		}
+	}
+}
+
+void CGraphView::OnUpdateZoomFit()
+{
+	CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetDocument());
+
+	CFMLogData* data = doc->GetData();
+	if (data)
+	{
+		CRect rect;
+		GetClientRect(&rect);
+
+		float width = static_cast<float>(rect.Width());
+		float length = data->GetTimeLength();
+
+		if (width > 0 && length > 0 && width < length)
+		{
+			data->ZoomFit(width);
+			int zoom = data->GetZoom();
+
+			m_timeline.SetOffset(0);
+			m_timeline.SetZoom(zoom);
+
+			pair<int, int> ruler = m_timeline.GetRuler();
+
+			BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
+			{
+				v.second->SetOffset(0);
+				v.second->SetZoom(zoom);
+				v.second->SetRuler(ruler);
+			}
+
+			int curpos = m_scroll.GetScrollPos();
+
+			SCROLLINFO info;
+			info.cbSize = sizeof(info);
+			info.fMask = SIF_RANGE | SIF_POS;
+			info.nMin = 0;
+			info.nMax = data->GetLength();
+			info.nPos = 0;
+
+			m_scroll.SetScrollInfo(&info);
+
+			Invalidate();
+
+			TRACE3("graph view zoom to fit... (%d/%d)(%d)\n", length, width, zoom);
+		}
+	}
 }
 
 void CGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
@@ -404,46 +471,7 @@ void CGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 		break;
 
 	case CFMonitor2Doc::UPDATE_ZOOM_FIT:
-		{
-			CRect rect;
-			GetClientRect(&rect);
-
-			float width = static_cast<float>(rect.Width());
-			float length = doc->GetData()->GetTimeLength();
-
-			if (width > 0 && length > 0 && width < length)
-			{
-				doc->GetData()->ZoomFit(width);
-				int zoom = doc->GetData()->GetZoom();
-
-				m_timeline.SetOffset(0);
-				m_timeline.SetZoom(zoom);
-
-				pair<int, int> ruler = m_timeline.GetRuler();
-
-				BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
-				{
-					v.second->SetOffset(0);
-					v.second->SetZoom(zoom);
-					v.second->SetRuler(ruler);
-				}
-
-				int curpos = m_scroll.GetScrollPos();
-
-				SCROLLINFO info;
-				info.cbSize = sizeof(info);
-				info.fMask = SIF_RANGE | SIF_POS;
-				info.nMin = 0;
-				info.nMax = doc->GetData()->GetLength();
-				info.nPos = 0;
-
-				m_scroll.SetScrollInfo(&info);
-
-				Invalidate();
-
-				TRACE3("graph view zoom to fit... (%d/%d)(%d)\n", length, width, zoom);
-			}
-		}
+		OnUpdateZoomFit();
 		break;
 
 	case CFMonitor2Doc::UPDATE_SAVE_PRESET:

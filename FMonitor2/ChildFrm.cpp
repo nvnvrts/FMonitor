@@ -99,6 +99,8 @@ void CChildFrame::OnToolZoomIn()
 	CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetActiveDocument());
 	if (doc)
 	{
+		doc->SetConfigZoomFit(false);
+
 		CFMonitor2Doc::Hint hint;
 		hint.ratio = doc->GetData()->ZoomIn();
 
@@ -124,6 +126,8 @@ void CChildFrame::OnToolZoomOut()
 	CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetActiveDocument());
 	if (doc)
 	{
+		doc->SetConfigZoomFit(false);
+
 		CFMonitor2Doc::Hint hint;
 		hint.ratio = doc->GetData()->ZoomOut();
 
@@ -149,10 +153,15 @@ void CChildFrame::OnToolZoomFit()
 	CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetActiveDocument());
 	if (doc)
 	{
-		CFMonitor2Doc::Hint hint;
-		hint.ratio = doc->GetData()->ZoomOut();
+		const CFMonitor2Doc::Config* config = doc->GetConfig();
 
-		doc->UpdateAllViews(NULL, CFMonitor2Doc::UPDATE_ZOOM_FIT, (CObject*)(&hint));
+		bool br = config->zoomFit;
+		doc->SetConfigZoomFit(!br);
+
+		if (!br)
+		{
+			doc->UpdateAllViews(NULL, CFMonitor2Doc::UPDATE_ZOOM_FIT, NULL);
+		}
 	}
 }
 
@@ -166,6 +175,9 @@ void CChildFrame::OnUpdateToolZoomFit(CCmdUI* pCmdUI)
 	else
 	{
 		pCmdUI->Enable(doc->GetData()->CanZoomOut());
+
+		const CFMonitor2Doc::Config* config = doc->GetConfig();
+		pCmdUI->SetCheck(config->zoomFit);
 	}
 }
 

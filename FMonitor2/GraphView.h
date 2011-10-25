@@ -55,4 +55,7 @@ protected:
 	virtual void OnDraw(CDC* pDC);
 	virtual void OnInitialUpdate();
 	virtual void OnUpdate(CView*, LPARAM, CObject*);
+
+protected:
+	void OnUpdateZoomFit();
 };
