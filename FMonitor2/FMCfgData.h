@@ -5,7 +5,6 @@
 #include <vector>
 
 using namespace std;
-using namespace stdext;
 
 namespace fmcfg
 {
