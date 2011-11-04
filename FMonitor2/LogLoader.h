@@ -13,6 +13,8 @@ using namespace stdext;
 
 class CFMParser
 {
+	enum { MAXBUF = 64 };
+
 protected:
 	int m_count;
 	int m_result;
@@ -100,73 +102,91 @@ protected:
 
 	inline int ParseInteger()
 	{
+		static char buf[MAXBUF];
+
+		int i = 0;
 		char* p = m_current;
 
 		bool quit = false;
 		while (!quit)
 		{
-			switch (*m_current)
+			if (i < MAXBUF)
 			{
-			case '-':
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-				Next();
-				continue;
-
-			default:
-				quit = true;
-				break;
+				switch (*m_current)
+				{
+				case '-':
+				case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':
+					buf[i++] = *m_current;
+					Next();
+					continue;
+					
+				default:
+					buf[i] = (char)(0);
+					quit = true;
+					break;
+				}
+			}
+			else
+			{
+				throw Error("parse int error!");
 			}
 		}
 
-		string str(p, m_current - p);
-		int number = atoi(str.c_str());
-
-		return number;
+		return atoi(buf);
 	}
 
 	inline float ParseFloat()
 	{
+		static char buf[MAXBUF];
+
+		int i = 0;
 		char* p = m_current;
 
 		bool quit = false;
 		while (!quit)
 		{
-			switch (*m_current)
+			if (i < MAXBUF)
 			{
-			case '-':
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-			case '.':
-				Next();
-				continue;
-
-			default:
-				quit = true;
-				break;
+				switch (*m_current)
+				{
+				case '-':
+				case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':
+				case '.':
+					buf[i++] = *m_current;
+					Next();
+					continue;
+					
+				default:
+					buf[i] = (char)(0);
+					quit = true;
+					break;
+				}
 			}
-		}
+			else
+			{
+				throw Error("parse float error!");
+			}
+		}			
 
-		string str(p, m_current - p);
-		float number = atof(str.c_str());
-
-		return number;
+		return static_cast<float>(atof(buf));
 	}
 
 	fmlog::Table* ParseTable();
