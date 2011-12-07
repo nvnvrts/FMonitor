@@ -35,7 +35,6 @@ CGraphCtrl::CGraphCtrl(CGraphView* view,
 	 m_colorIdx(0),
 	 m_meter(CPoint(0, 0)),
 	 m_lines(0),
-	 m_ruler(make_pair(0, 100)),
 	 m_localMax(false),
 	 m_saturation(false)
 {
@@ -87,10 +86,10 @@ void CGraphCtrl::SetMeter(CPoint point)
 	m_meter = point;
 }
 
-void CGraphCtrl::SetRuler(pair<int, int> ruler)
-{
-	m_ruler = ruler;
-}
+//void CGraphCtrl::SetRuler(vector<int> ruler)
+//{
+//	m_ruler = ruler;
+//}
 
 void CGraphCtrl::SetStyle(int style)
 {
@@ -460,7 +459,19 @@ void CGraphCtrl::OnPaint()
 			dc.LineTo(ox + w, cy);
 		}
 
-		for (int x = m_ruler.first; x < w; x += m_ruler.second)
+		BOOST_FOREACH(int x, m_view->GetHourRuler())
+		{
+			dc.MoveTo(ox + x, oy + h);
+			dc.LineTo(ox + x, oy);
+		}
+	}
+
+	{
+		CPen pen;
+		pen.CreatePen(PS_SOLID, 1, RGB(64, 64, 64));
+		dc.SelectObject(&pen);
+
+		BOOST_FOREACH(int x, m_view->GetDayRuler())
 		{
 			dc.MoveTo(ox + x, oy + h);
 			dc.LineTo(ox + x, oy);

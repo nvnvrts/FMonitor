@@ -19,7 +19,8 @@ public:
 	void SetOffset(unsigned int offset);
 	void SetZoom(int zoom);
 	void SetMeter(int x);
-	pair<int, int> GetRuler();
+	enum RulerType { HOUR, HALFDAY, DAY };
+	vector<int> GetRuler(const RulerType type = HOUR);
 	void SetTimeline(const CFMLogData::TimeLine& m_timeline);
 
 protected:

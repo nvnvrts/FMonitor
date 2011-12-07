@@ -32,6 +32,9 @@ public:
 	void CloseGraph(const string& name);
 	void CloseAllGraphs();
 
+	vector<int> GetHourRuler();
+	vector<int> GetDayRuler();
+
 	void UpdateLayout();
 
 	void OnMouseMove(CGraphCtrl* graph, UINT nFlags, CPoint point);

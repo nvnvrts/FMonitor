@@ -45,45 +45,63 @@ void CTimeline::SetMeter(int x)
 	m_meter = x;
 }
 
-pair<int, int> CTimeline::GetRuler()
+vector<int> CTimeline::GetRuler(const RulerType type)
 {
-	int offset = -1;
+	vector<int> result;
+
 	int width = 10000;
 
 	CRect rc;
 	GetClientRect(rc);
 
+	const int len = static_cast<int>(m_timeline->size());
+	
 	CTime t0;
 
 	for (int x = 0; x < rc.Width(); x++)
 	{
 		int idx = m_zoom * (m_offset + x);
-		int len = static_cast<int>(m_timeline->size());
 
-		if (idx < len)
+		if (idx < 0 || idx >= len)
+		{
+			break;
+		}
+		else
 		{
 			CTime t(m_timeline->at(idx));
 
-			if (t.GetMinute() == 0)
+			if (x == 0)
 			{
-				if (offset == -1)
-				{
-					t0 = t;
-					offset = x;
-				}
-				else
+				t0 = t;
+			}
+
+			switch (type)
+			{
+			case HOUR:
 				{
 					if (t0.GetHour() != t.GetHour())
 					{
-						width = x - offset;
-						break;
+						t0 = t;
+						result.push_back(x);
 					}
 				}
+				break;
+
+			case DAY:
+			default:
+				{
+					if (t0.GetDay() != t.GetDay())
+					{
+						t0 = t;
+						result.push_back(x);
+					}
+				}
+				break;
 			}
 		}
 	}
 
-	return make_pair(offset, width);
+	return result;
 }
 
 void CTimeline::OnPaint()
@@ -125,27 +143,21 @@ void CTimeline::OnPaint()
 
 		dc.SetBkColor(RGB(192, 192, 192));
 
-		int prev = 0;
+		CTime t0;
+		const int len = static_cast<int>(m_timeline->size());
 
-		for (int x = 0; x < w; x++)
+		BOOST_FOREACH(int x, GetRuler(HOUR))
 		{
 			int idx = m_zoom * (m_offset + x);
-			int len = static_cast<int>(m_timeline->size());
-
-			if (idx >= len)
+			if (idx < 0 || idx >= len)
 			{
 				break;
 			}
-			else if (prev == 0 || x - prev >= 100)
+			else
 			{
 				CTime t(m_timeline->at(idx));
-
-				if (t.GetMinute() == 0)
-				{
-					CString str = t.Format("%m/%d %H:%M");
-					dc.TextOut(ox + x, oy + 3, str);
-					prev = ox + x;
-				}
+				CString str = t.Format("%m/%d %H:%M");
+				dc.TextOut(ox + x, oy + 3, str);
 			}
 		}
 

@@ -98,7 +98,6 @@ void CGraphView::ToggleGraph(int id)
 			graph->AddData(key.second, list);
 			graph->SetOffset(m_scroll.GetScrollPos());
 			graph->SetZoom(doc->GetData()->GetZoom());
-			graph->SetRuler(m_timeline.GetRuler());
 
 			hint.id = id;
 			hint.color = graph->GetColor(key.second);
@@ -150,6 +149,16 @@ void CGraphView::CloseAllGraphs()
 	{
 		CloseGraph(name);
 	}
+}
+
+vector<int> CGraphView::GetHourRuler()
+{
+	return m_timeline.GetRuler(CTimeline::HOUR);
+}
+
+vector<int> CGraphView::GetDayRuler()
+{
+	return m_timeline.GetRuler(CTimeline::DAY);
 }
 
 void CGraphView::UpdateLayout()
@@ -302,12 +311,10 @@ void CGraphView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	pScrollBar->SetScrollPos(curpos);
 
 	m_timeline.SetOffset(curpos);
-	pair<int, int> ruler = m_timeline.GetRuler();
 
 	BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
 	{
 		v.second->SetOffset(curpos);
-		v.second->SetRuler(ruler);
 	}
 
 	Invalidate();
@@ -378,13 +385,10 @@ void CGraphView::OnUpdateZoomFit()
 			m_timeline.SetOffset(0);
 			m_timeline.SetZoom(zoom);
 
-			pair<int, int> ruler = m_timeline.GetRuler();
-
 			BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
 			{
 				v.second->SetOffset(0);
 				v.second->SetZoom(zoom);
-				v.second->SetRuler(ruler);
 			}
 
 			int curpos = m_scroll.GetScrollPos();
@@ -455,13 +459,11 @@ void CGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 
 			m_timeline.SetZoom(zoom);
 			m_timeline.SetOffset(info.nPos);
-			pair<int, int> ruler = m_timeline.GetRuler();
 
 			BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
 			{
 				v.second->SetOffset(info.nPos);
 				v.second->SetZoom(zoom);
-				v.second->SetRuler(ruler);
 			}
 
 			Invalidate();
