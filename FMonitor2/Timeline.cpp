@@ -190,7 +190,7 @@ void CTimeline::OnPaint()
 			int idx = m_zoom * (m_offset + x);
 			int len = static_cast<int>(m_timeline->size());
 
-			if (idx >= len)
+			if (idx < 0 || idx >= len)
 			{
 				TRACE2("timeline meter idx(%d) is out of len(%d)!", idx, len);
 			}
