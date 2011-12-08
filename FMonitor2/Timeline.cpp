@@ -156,7 +156,22 @@ void CTimeline::OnPaint()
 			else
 			{
 				CTime t(m_timeline->at(idx));
-				CString str = t.Format("%m/%d %H:%M");
+				CString str = t.Format("%H");
+				dc.TextOut(ox + x, oy + 3, str);
+			}
+		}
+
+		BOOST_FOREACH(int x, GetRuler(DAY))
+		{
+			int idx = m_zoom * (m_offset + x);
+			if (idx < 0 || idx >= len)
+			{
+				break;
+			}
+			else
+			{
+				CTime t(m_timeline->at(idx));
+				CString str = t.Format("%m/%d");
 				dc.TextOut(ox + x, oy + 3, str);
 			}
 		}

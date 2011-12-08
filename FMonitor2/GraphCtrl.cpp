@@ -86,11 +86,6 @@ void CGraphCtrl::SetMeter(CPoint point)
 	m_meter = point;
 }
 
-//void CGraphCtrl::SetRuler(vector<int> ruler)
-//{
-//	m_ruler = ruler;
-//}
-
 void CGraphCtrl::SetStyle(int style)
 {
 	if (style == 1)
