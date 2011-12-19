@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <sstream>
 #include "FMonitor2.h"
 #include "LogLoader.h"
 #include "FMonitor2Doc.h"
@@ -97,19 +98,35 @@ BOOL CFMonitor2Doc::OnOpenDocument(LPCTSTR lpszPathName)
 		DWORD size = GetFileSize(m_hFile, NULL);
 		if (size == 0)
 		{
-			throw Error("file is empty!");
+			ostringstream oss;
+			oss << "the file is empty!\n\n"
+				<< "path = " << lpszPathName << "\n";
+
+			throw Error(oss.str());
 		}
 
 		m_hMap = CreateFileMapping(m_hFile, NULL, PAGE_READONLY, 0, 0, NULL);
 		if (m_hMap == NULL)
 		{
-			throw Error("can't map the file!");
+			ostringstream oss;
+			oss << "can't map the file!\n\n"
+				<< "path = " << lpszPathName << "\n"
+				<< "file size = " << size << "\n"
+				<< "error = " << ::GetLastError();
+
+			throw Error(oss.str());
 		}
 
 		m_pBase = MapViewOfFile(m_hMap, FILE_MAP_READ, 0, 0, 0);
 		if (m_pBase == NULL)
 		{
-			throw Error("can't view the file!");
+			ostringstream oss;
+			oss << "can't view the file!\n\n"
+				<< "path = " << lpszPathName << "\n"
+				<< "file size = " << size << "\n"
+				<< "error = " << ::GetLastError();
+
+			throw Error(oss.str());
 		}
 
 		CLogLoader loader;
