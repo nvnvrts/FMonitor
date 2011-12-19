@@ -126,53 +126,70 @@ void CTimeline::OnPaint()
 	}
 
 	if (m_timeline)
-	{
-		CPen pen1;
-		pen1.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
-		dc.SelectObject(&pen1);
-
-		LOGFONT lf;
-		memset(&lf, 0, sizeof(LOGFONT));
-		lf.lfHeight = 13;
-		lf.lfWeight = FW_BOLD;
-		strcpy(lf.lfFaceName, "Arial");
-
-		CFont font;
-		VERIFY(font.CreateFontIndirect(&lf));
-		dc.SelectObject(&font);
-
+	{		
 		dc.SetBkColor(RGB(192, 192, 192));
 
-		CTime t0;
 		const int len = static_cast<int>(m_timeline->size());
 
-		BOOST_FOREACH(int x, GetRuler(HOUR))
 		{
-			int idx = m_zoom * (m_offset + x);
-			if (idx < 0 || idx >= len)
+			LOGFONT lf;
+			memset(&lf, 0, sizeof(LOGFONT));
+			lf.lfHeight = 10;
+			//lf.lfWeight = FW_BOLD;
+			strcpy(lf.lfFaceName, "Arial");
+			
+			CFont font;
+			VERIFY(font.CreateFontIndirect(&lf));
+			dc.SelectObject(&font);
+
+			CPen pen;
+			pen.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+			dc.SelectObject(&pen);
+			
+			BOOST_FOREACH(int x, GetRuler(HOUR))
 			{
-				break;
-			}
-			else
-			{
-				CTime t(m_timeline->at(idx));
-				CString str = t.Format("%H");
-				dc.TextOut(ox + x, oy + 3, str);
+				int idx = m_zoom * (m_offset + x);
+				if (idx < 0 || idx >= len)
+				{
+					break;
+				}
+				else
+				{
+					CTime t(m_timeline->at(idx));
+					CString str = t.Format("%H");
+					dc.TextOut(ox + x, oy + 3, str);
+				}
 			}
 		}
 
-		BOOST_FOREACH(int x, GetRuler(DAY))
 		{
-			int idx = m_zoom * (m_offset + x);
-			if (idx < 0 || idx >= len)
+			LOGFONT lf;
+			memset(&lf, 0, sizeof(LOGFONT));
+			lf.lfHeight = 13;
+			lf.lfWeight = FW_BOLD;
+			strcpy(lf.lfFaceName, "Arial");
+			
+			CFont font;
+			VERIFY(font.CreateFontIndirect(&lf));
+			dc.SelectObject(&font);
+
+			CPen pen;
+			pen.CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
+			dc.SelectObject(&pen);
+			
+			BOOST_FOREACH(int x, GetRuler(DAY))
 			{
-				break;
-			}
-			else
-			{
-				CTime t(m_timeline->at(idx));
-				CString str = t.Format("%m/%d");
-				dc.TextOut(ox + x, oy + 3, str);
+				int idx = m_zoom * (m_offset + x);
+				if (idx < 0 || idx >= len)
+				{
+					break;
+				}
+				else
+				{
+					CTime t(m_timeline->at(idx));
+					CString str = t.Format("%m/%d");
+					dc.TextOut(ox + x, oy + 17, str);
+				}
 			}
 		}
 

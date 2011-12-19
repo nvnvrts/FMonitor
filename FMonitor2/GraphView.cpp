@@ -218,7 +218,12 @@ int CGraphView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CView::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	m_timeline.Create(0, 0, WS_CHILD | WS_VISIBLE, CRect(0, 0, 0, 25), this, 0);
+	m_timeline.Create(0,
+		              0,
+					  WS_CHILD | WS_VISIBLE,
+					  CRect(0, 0, 0, 35),
+					  this,
+					  0);
 
 	m_scroll.Create(SBS_HORZ | SBS_TOPALIGN | WS_CHILD | WS_VISIBLE,
 		            CRect(0, 0, 0, 10),
