@@ -10,6 +10,8 @@ class CDataTreeView : public CXTPTreeView
 	typedef map<int, HTREEITEM> ItemMap;
 	ItemMap m_items;
 
+	CFont m_font;
+
 	DECLARE_DYNCREATE(CDataTreeView)
 
 protected:

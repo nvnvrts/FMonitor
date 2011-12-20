@@ -2,6 +2,8 @@
 
 class CConfigTreeView : public CTreeView
 {
+	CFont m_font;
+
 	DECLARE_DYNCREATE(CConfigTreeView)
 
 protected:

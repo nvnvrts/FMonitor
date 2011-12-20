@@ -136,7 +136,7 @@ void CTimeline::OnPaint()
 			memset(&lf, 0, sizeof(LOGFONT));
 			lf.lfHeight = 10;
 			//lf.lfWeight = FW_BOLD;
-			strcpy(lf.lfFaceName, "Arial");
+			strcpy(lf.lfFaceName, "Tahoma");
 			
 			CFont font;
 			VERIFY(font.CreateFontIndirect(&lf));
@@ -167,7 +167,7 @@ void CTimeline::OnPaint()
 			memset(&lf, 0, sizeof(LOGFONT));
 			lf.lfHeight = 13;
 			lf.lfWeight = FW_BOLD;
-			strcpy(lf.lfFaceName, "Arial");
+			strcpy(lf.lfFaceName, "Tahoma");
 			
 			CFont font;
 			VERIFY(font.CreateFontIndirect(&lf));

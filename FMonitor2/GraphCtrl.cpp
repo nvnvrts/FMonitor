@@ -482,7 +482,7 @@ void CGraphCtrl::OnPaint()
 		LOGFONT lf;
 		memset(&lf, 0, sizeof(LOGFONT));
 		lf.lfHeight = 12;
-		strcpy(lf.lfFaceName, "Arial");
+		strcpy(lf.lfFaceName, "Tahoma");
 		VERIFY(font.CreateFontIndirect(&lf));
 		dc.SelectObject(&font);
 

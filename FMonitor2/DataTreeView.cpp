@@ -19,6 +19,12 @@ END_MESSAGE_MAP()
 
 CDataTreeView::CDataTreeView()
 {
+	LOGFONT lf;
+	memset(&lf, 0, sizeof(LOGFONT));
+	lf.lfHeight = 13;
+	strcpy(lf.lfFaceName, "Tahoma");
+
+	VERIFY(m_font.CreateFontIndirect(&lf));
 }
 
 CDataTreeView::~CDataTreeView()
@@ -47,6 +53,8 @@ BOOL CDataTreeView::PreCreateWindow(CREATESTRUCT& cs)
 void CDataTreeView::OnInitialUpdate()
 {
 	CXTPTreeView::OnInitialUpdate();
+
+	GetTreeCtrl().SetFont(&m_font);
 
 	CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetDocument());
 	CFMLogData* data = doc->GetData();

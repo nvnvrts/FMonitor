@@ -15,6 +15,12 @@ END_MESSAGE_MAP()
 
 CConfigTreeView::CConfigTreeView()
 {
+	LOGFONT lf;
+	memset(&lf, 0, sizeof(LOGFONT));
+	lf.lfHeight = 13;
+	strcpy(lf.lfFaceName, "Tahoma");
+
+	VERIFY(m_font.CreateFontIndirect(&lf));
 }
 
 CConfigTreeView::~CConfigTreeView()
@@ -69,6 +75,8 @@ void CConfigTreeView::AddTable(HTREEITEM parent, fmlog::Table* table)
 void CConfigTreeView::OnInitialUpdate()
 {
 	CTreeView::OnInitialUpdate();
+
+	GetTreeCtrl().SetFont(&m_font);
 
 	CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetDocument());
 	CFMLogData* data = doc->GetData();
