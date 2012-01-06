@@ -245,6 +245,7 @@ void CChildFrame::OnToolPreset(UINT nID)
 				{
 					CFMonitor2Doc::Hint hint;
 					hint.id = doc->GetData()->GetIndex(v.first, v.second);
+					hint.show = hint.hide = true;
 
 					doc->UpdateAllViews(NULL, CFMonitor2Doc::UPDATE_DATA_SELECTED, (CObject*)(&hint));
 				}

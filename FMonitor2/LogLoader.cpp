@@ -379,8 +379,6 @@ CFMLogData* CFMLogParser::ParseData()
 	return result.release();
 }
 
-//
-
 CLogLoader::CLogLoader()
 {
 }

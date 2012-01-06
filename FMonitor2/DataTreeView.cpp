@@ -2,6 +2,8 @@
 #include <boost/foreach.hpp>
 #include "FMonitor2.h"
 #include "FMonitor2Doc.h"
+#include "FilterDialog.h"
+#include "Filter.h"
 #include "DataTreeView.h"
 
 #ifdef _DEBUG
@@ -14,7 +16,8 @@ BEGIN_MESSAGE_MAP(CDataTreeView, CXTPTreeView)
 	ON_NOTIFY_REFLECT(NM_DBLCLK, &CDataTreeView::OnNMDblclk)
 	ON_NOTIFY_REFLECT(NM_RCLICK, &CDataTreeView::OnNMRclick)
 	ON_COMMAND(ID_DATATREE_MENU_SHOWALL, &CDataTreeView::OnMenuShowAll)
-	ON_COMMAND(ID_DATATREE_MENU_CLOSE, &CDataTreeView::OnMenuClose)
+	ON_COMMAND(ID_DATATREE_MENU_CLOSEALL, &CDataTreeView::OnMenuCloseAll)
+	ON_COMMAND(ID_DATATREE_MENU_FILTER, &CDataTreeView::OnMenuFilter)
 END_MESSAGE_MAP()
 
 CDataTreeView::CDataTreeView()
@@ -120,6 +123,7 @@ void CDataTreeView::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
 
 			CFMonitor2Doc::Hint hint;
 			hint.id = id;
+			hint.show = hint.hide = true;
 
 			doc->UpdateAllViews(this, CFMonitor2Doc::UPDATE_DATA_SELECTED, (CObject*)(&hint));
 		}
@@ -143,8 +147,8 @@ void CDataTreeView::OnNMRclick(NMHDR *pNMHDR, LRESULT *pResult)
 			if (menu.CreatePopupMenu())
 			{
 				menu.AppendMenu(MF_STRING, ID_DATATREE_MENU_SHOWALL, _T("Show All"));
-				//menu.AppendMenu(MF_STRING, ID_DATATREE_MENU_SHOWALL, _T("Show If ..."));
-				menu.AppendMenu(MF_STRING, ID_DATATREE_MENU_CLOSE, _T("Close"));
+				menu.AppendMenu(MF_STRING, ID_DATATREE_MENU_CLOSEALL, _T("Close All"));
+				menu.AppendMenu(MF_STRING, ID_DATATREE_MENU_FILTER, _T("Filter ..."));
 
 				CPoint point;
 				GetCursorPos(&point);
@@ -171,6 +175,7 @@ void CDataTreeView::OnMenuShowAll()
 			{
 				CFMonitor2Doc::Hint hint;
 				hint.id = id;
+				hint.hide = hint.show = true;
 
 				doc->UpdateAllViews(this, CFMonitor2Doc::UPDATE_DATA_SELECTED, (CObject*)(&hint));
 			}
@@ -180,11 +185,7 @@ void CDataTreeView::OnMenuShowAll()
 	}
 }
 
-void CDataTreeView::OnMenuShowIf()
-{
-}
-
-void CDataTreeView::OnMenuClose()
+void CDataTreeView::OnMenuCloseAll()
 {
 	HTREEITEM item = GetTreeCtrl().GetSelectedItem();
 	if (item != NULL)
@@ -195,5 +196,64 @@ void CDataTreeView::OnMenuClose()
 		hint.str = GetTreeCtrl().GetItemText(item);
 
 		doc->UpdateAllViews(this, CFMonitor2Doc::UPDATE_CLOSE, (CObject*)(&hint));
+	}
+}
+
+void CDataTreeView::OnMenuFilter()
+{
+	CFilterDialog dlg;
+
+	if (dlg.DoModal() == IDOK)
+	{
+		try
+		{
+			string buf = dlg.GetExpression();
+			CFMFilterParser parser(buf.c_str(), buf.length());
+
+			CFilter filter = parser.CreateFilter(dlg.GetAction());
+
+			HTREEITEM item = GetTreeCtrl().GetSelectedItem();
+			if (item != NULL)
+			{
+				CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetDocument());
+				
+				HTREEITEM child = GetTreeCtrl().GetChildItem(item);
+				while (child != NULL)
+				{
+					int id = GetTreeCtrl().GetItemData(child);
+					if (id)
+					{
+						fmlog::List* list = doc->GetData()->GetList(id);
+						if (list)
+						{
+							CFMonitor2Doc::Hint hint;
+							hint.id = id;
+
+							CFilter::ActionType action = filter.Test(list->GetMax());
+							if (action == CFilter::SHOW)
+							{
+								hint.show = true;
+								hint.hide = false;
+
+								doc->UpdateAllViews(this, CFMonitor2Doc::UPDATE_DATA_SELECTED, (CObject*)(&hint));
+							}
+							else if (action == CFilter::HIDE)
+							{
+								hint.show = false;
+								hint.hide = true;
+
+								doc->UpdateAllViews(this, CFMonitor2Doc::UPDATE_DATA_SELECTED, (CObject*)(&hint));
+							}
+						}
+					}
+
+					child = GetTreeCtrl().GetNextItem(child, TVGN_NEXT);
+				}
+			}
+		}
+		catch (Error& e)
+		{
+			AfxMessageBox(e.GetReason().c_str(), MB_OK);
+		}
 	}
 }

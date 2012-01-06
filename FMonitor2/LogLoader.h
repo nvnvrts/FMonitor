@@ -31,19 +31,16 @@ public:
 protected:
 	inline void Next()
 	{
-		while (true)
+		while (m_count < m_length)
 		{
 			++m_count;
 			++m_current;
 
 			switch (*m_current)
 			{
-			case ' ':
-			case '\t':
-			case '\r':
-			case '\n':
+			case ' ': case '\t': case '\r':	case '\n':
 				continue;
-
+				
 			default:
 				return;
 			}
@@ -192,8 +189,6 @@ protected:
 	fmlog::Table* ParseTable();
 };
 
-//
-
 class CFMCfgParser : public CFMParser
 {
 public:
@@ -203,8 +198,6 @@ public:
 
 	CFMCfgData* ParseData();
 };
-
-//
 
 class CFMLogParser : public CFMParser
 {
@@ -220,8 +213,6 @@ public:
 
 	CFMLogData* ParseData();
 };
-
-//
 
 class CLogLoader
 {

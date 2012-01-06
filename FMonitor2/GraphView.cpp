@@ -46,7 +46,7 @@ void CGraphView::Dump(CDumpContext& dc) const
 }
 #endif
 
-void CGraphView::ToggleGraph(int id)
+void CGraphView::ToggleGraph(int id, bool show, bool hide)
 {
 	CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetDocument());
 
@@ -61,14 +61,17 @@ void CGraphView::ToggleGraph(int id)
 	}
 	else
 	{
-		const CFMLogData::TimeLine& timeline = doc->GetData()->GetTimeLine();
+		if (show)
+		{
+			const CFMLogData::TimeLine& timeline = doc->GetData()->GetTimeLine();
 
-		graph = new CGraphCtrl(this, key.first, m_style, timeline);
-		graph->Create(NULL, NULL, WS_CHILD | WS_VISIBLE, CRect(0, 0, 0, 0), this, 0);
+			graph = new CGraphCtrl(this, key.first, m_style, timeline);
+			graph->Create(NULL, NULL, WS_CHILD | WS_VISIBLE, CRect(0, 0, 0, 0), this, 0);
 
-		m_graphs.insert(GraphMap::value_type(key.first, graph));
+			m_graphs.insert(GraphMap::value_type(key.first, graph));
 
-		m_list.push_back(key.first);
+			m_list.push_back(key.first);
+		}
 	}
 
 	CFMonitor2Doc::Hint hint;
@@ -81,14 +84,17 @@ void CGraphView::ToggleGraph(int id)
 	{
 		if (graph->HasData(key.second))
 		{
-			graph->RemoveData(key.second);
-
-			hint.id = id;
-			hint.color = RGB(0, 0, 0);
-
-			if (graph->GetKeyList().empty())
+			if (hide)
 			{
-				CloseGraph(key.first);
+				graph->RemoveData(key.second);
+
+				hint.id = id;
+				hint.color = RGB(0, 0, 0);
+
+				if (graph->GetKeyList().empty())
+				{
+					CloseGraph(key.first);
+				}
 			}
 		}
 		else
@@ -431,7 +437,7 @@ void CGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 
 	case CFMonitor2Doc::UPDATE_DATA_SELECTED:
 		{
-			ToggleGraph(hint->id);
+			ToggleGraph(hint->id, hint->show, hint->hide);
 		}
 		break;
 
