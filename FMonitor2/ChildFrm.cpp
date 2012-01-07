@@ -24,6 +24,8 @@ BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWnd)
 	ON_UPDATE_COMMAND_UI(ID_TOOL_ZOOMFIT, &CChildFrame::OnUpdateToolZoomFit)
 	ON_COMMAND(ID_TOOL_SHOW_LOGTIME, &CChildFrame::OnToolShowLogTime)
 	ON_UPDATE_COMMAND_UI(ID_TOOL_SHOW_LOGTIME, &CChildFrame::OnUpdateToolShowLogTime)
+	ON_COMMAND(ID_TOOL_SHOW_RULER, &CChildFrame::OnToolShowRuler)
+	ON_UPDATE_COMMAND_UI(ID_TOOL_SHOW_RULER, &CChildFrame::OnUpdateToolShowRuler)
 	ON_COMMAND(ID_TOOL_SAVE_PRESET_AS, &CChildFrame::OnToolSavePresetAs)
 	ON_UPDATE_COMMAND_UI(ID_TOOL_SAVE_PRESET_AS, &CChildFrame::OnUpdateToolSavePresetAs)
 	ON_COMMAND_RANGE(ID_TOOL_PRESET, ID_TOOL_PRESET9, &CChildFrame::OnToolPreset)
@@ -191,6 +193,28 @@ void CChildFrame::OnToolShowLogTime()
 }
 
 void CChildFrame::OnUpdateToolShowLogTime(CCmdUI* pCmdUI)
+{
+	CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetActiveDocument());
+	if (doc)
+	{
+		pCmdUI->Enable(TRUE);
+	}
+	else
+	{
+		pCmdUI->Enable(FALSE);
+	}
+}
+
+void CChildFrame::OnToolShowRuler()
+{
+	CMainFrame* frame = (CMainFrame*)(AfxGetMainWnd());
+	if (frame)
+	{
+		frame->ToggleFlag(_T("ruler"));
+	}
+}
+
+void CChildFrame::OnUpdateToolShowRuler(CCmdUI* pCmdUI)
 {
 	CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetActiveDocument());
 	if (doc)

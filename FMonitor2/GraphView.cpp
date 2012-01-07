@@ -201,13 +201,20 @@ void CGraphView::UpdateLayout()
 
 void CGraphView::OnMouseMove(CGraphCtrl* graph, UINT nFlags, CPoint point)
 {
-	BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
+	CMainFrame* frame = (CMainFrame*)(AfxGetMainWnd());
+	if (frame)
 	{
-		CGraphCtrl* g = v.second;
-		if (g != graph)
+		if (frame->GetFlag(_T("ruler")))
 		{
-			g->SetMeter(point);
-			g->Invalidate();
+			BOOST_FOREACH(GraphMap::value_type& v, m_graphs)
+			{
+				CGraphCtrl* g = v.second;
+				if (g != graph)
+				{
+					g->SetMeter(point);
+					g->Invalidate();
+				}
+			}
 		}
 	}
 

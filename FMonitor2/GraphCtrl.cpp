@@ -17,7 +17,7 @@ IMPLEMENT_DYNAMIC(CGraphCtrl, CWnd)
 BEGIN_MESSAGE_MAP(CGraphCtrl, CWnd)
 	ON_WM_PAINT()
 	ON_WM_MOUSEMOVE()
-	//ON_WM_MOUSELEAVE()
+	ON_WM_MOUSELEAVE()
 	ON_WM_LBUTTONUP()
 END_MESSAGE_MAP()
 
@@ -584,15 +584,13 @@ void CGraphCtrl::OnMouseMove(UINT nFlags, CPoint point)
 	Invalidate();
 }
 
-BOOL CGraphCtrl::OnMouseLeave()
+void CGraphCtrl::OnMouseLeave()
 {
 	//TRACE1("graph control mouse leave (%s)...\n", m_name.c_str());
 
 	SetMeter(CPoint(0, 0));
 
 	Invalidate();
-
-	return TRUE;
 }
 
 void CGraphCtrl::OnLButtonUp(UINT nFlags, CPoint point)

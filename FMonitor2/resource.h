@@ -21,6 +21,8 @@
 #define ID_TOOL_ZOOMOUT                 32772
 #define ID_TOOL_ZOOMFIT                 32773
 #define ID_TOOL_MAX                     32774
+#define ID_BUTTON32781                  32781
+#define ID_TOOL_SHOW_RULER              32781
 #define ID_TOOL_SHOW_LOGTIME            33000
 #define ID_TOOL_SAVE_PRESET_AS          33100
 #define ID_TOOL_PRESET                  34000
@@ -42,7 +44,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        132
-#define _APS_NEXT_COMMAND_VALUE         32775
+#define _APS_NEXT_COMMAND_VALUE         32782
 #define _APS_NEXT_CONTROL_VALUE         1009
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
