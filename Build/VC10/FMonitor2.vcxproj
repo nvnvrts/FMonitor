@@ -150,6 +150,8 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
     </ClCompile>
+    <ClCompile Include="..\..\FMonitor2\Filter.cpp" />
+    <ClCompile Include="..\..\FMonitor2\FilterDialog.cpp" />
     <ClCompile Include="..\..\FMonitor2\FMCfgData.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
@@ -244,6 +246,8 @@
     <ClInclude Include="..\..\FMonitor2\ConfigTreeView.h" />
     <ClInclude Include="..\..\FMonitor2\DataTreeView.h" />
     <ClInclude Include="..\..\FMonitor2\Error.h" />
+    <ClInclude Include="..\..\FMonitor2\Filter.h" />
+    <ClInclude Include="..\..\FMonitor2\FilterDialog.h" />
     <ClInclude Include="..\..\FMonitor2\FMCfgData.h" />
     <ClInclude Include="..\..\FMonitor2\FMLogData.h" />
     <ClInclude Include="..\..\FMonitor2\FMLogType.h" />
@@ -276,7 +280,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="FMonitor2.rc" />
+      <UserProperties RESOURCE_FILE="" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

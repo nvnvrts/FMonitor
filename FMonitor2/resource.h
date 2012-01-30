@@ -7,12 +7,22 @@
 #define IDR_MAINFRAME                   128
 #define IDR_FMonitor2TYPE               129
 #define IDD_SAVE_PRESET_AS_DIALOG       130
+#define IDD_CONDITION_DIALOG            131
+#define IDD_FILTER_DIALOG               131
 #define IDC_EDIT1                       1000
 #define IDC_PRSET_NAME_EDIT             1000
+#define IDC_RADIO1                      1006
+#define IDC_RADIO                       1006
+#define IDC_SHOW_RADIO                  1006
+#define IDC_RADIO2                      1007
+#define IDC_CLOSE_RADIO                 1007
+#define IDC_EXPR_EDIT                   1008
 #define ID_TOOL_ZOOMIN                  32771
 #define ID_TOOL_ZOOMOUT                 32772
 #define ID_TOOL_ZOOMFIT                 32773
 #define ID_TOOL_MAX                     32774
+#define ID_BUTTON32781                  32781
+#define ID_TOOL_SHOW_RULER              32781
 #define ID_TOOL_SHOW_LOGTIME            33000
 #define ID_TOOL_SAVE_PRESET_AS          33100
 #define ID_TOOL_FILEATTACH              33200
@@ -27,17 +37,16 @@
 #define ID_TOOL_PRESET8                 34008
 #define ID_TOOL_PRESET9                 34009
 #define ID_DATATREE_MENU_SHOWALL        35000
-#define ID_DATATREE_MENU_SHOWIF         35001
-#define ID_DATATREE_MENU_CLOSE          35002
-
+#define ID_DATATREE_MENU_CLOSEALL       35002
+#define ID_DATATREE_MENU_FILTER         35003
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        131
-#define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1001
+#define _APS_NEXT_RESOURCE_VALUE        132
+#define _APS_NEXT_COMMAND_VALUE         32782
+#define _APS_NEXT_CONTROL_VALUE         1009
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

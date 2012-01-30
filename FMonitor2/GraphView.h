@@ -28,7 +28,7 @@ protected:
 	virtual ~CGraphView();
 
 public:
-	void ToggleGraph(int id);
+	void ToggleGraph(int id, bool show = true, bool hide = true);
 	void CloseGraph(const string& name);
 	void CloseAllGraphs();
 

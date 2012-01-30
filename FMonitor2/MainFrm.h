@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <hash_map>
 #include "FMCfgData.h"
 
 using namespace std;
@@ -15,6 +16,9 @@ private:
 
 	CFMCfgData* m_config;
 
+	typedef hash_map<string, bool> FlagHash;
+	FlagHash m_flags;
+
 	DECLARE_DYNAMIC(CMainFrame)
 
 public:
@@ -23,6 +27,9 @@ public:
 
 	bool AddPreset(const string& name, const fmcfg::Preset::List& keys, const string& caption);
 	const fmcfg::Preset* GetPreset(UINT nID);
+
+	bool GetFlag(const string& name) { return m_flags[name]; }
+	bool ToggleFlag(const string& name);
 
 protected:
 	CString DumpConfig();

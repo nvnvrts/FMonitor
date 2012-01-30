@@ -29,6 +29,8 @@ public:
 	struct Hint
 	{
 		int id;
+		bool show;
+		bool hide;
 		float ratio;
 		COLORREF color;
 		string str;

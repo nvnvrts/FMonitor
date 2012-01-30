@@ -121,6 +121,21 @@ const fmcfg::Preset* CMainFrame::GetPreset(UINT nID)
 	return 0;
 }
 
+bool CMainFrame::ToggleFlag(const string& name)
+{
+	FlagHash::iterator it = m_flags.find(name);
+	if (it == m_flags.end())
+	{
+		m_flags.insert(FlagHash::value_type(name, true));
+		return true;
+	}
+	else
+	{
+		(*it).second = !(*it).second;
+		return (*it).second;
+	}
+}
+
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
 	if (!CMDIFrameWnd::PreCreateWindow(cs))
