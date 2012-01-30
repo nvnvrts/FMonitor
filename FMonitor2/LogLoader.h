@@ -218,7 +218,7 @@ public:
 	{
 	}
 
-	CFMLogData* ParseData();
+	CFMLogData* ParseData(CFMLogData* pData = 0);
 };
 
 //
@@ -230,7 +230,7 @@ public:
 	~CLogLoader();
 
 public:
-	CFMLogData* Load(const char* pch, const size_t length);
+	CFMLogData* Load(const char* pch, const size_t length, CFMLogData* pData = 0);
 
 	void Reset();
 };

@@ -15,6 +15,7 @@
 #define ID_TOOL_MAX                     32774
 #define ID_TOOL_SHOW_LOGTIME            33000
 #define ID_TOOL_SAVE_PRESET_AS          33100
+#define ID_TOOL_FILEATTACH              33200
 #define ID_TOOL_PRESET                  34000
 #define ID_TOOL_PRESET1                 34001
 #define ID_TOOL_PRESET2                 34002

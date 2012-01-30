@@ -195,10 +195,6 @@ void CTimeline::OnPaint()
 
 		if (m_meter < rectTimeLine.left || m_meter > rectTimeLine.right)
 		{
-			TRACE3("timeline meter(%d) is out of (%d,%d)!\n",
-				   m_meter,
-				   rectTimeLine.left,
-				   rectTimeLine.right);
 		}
 		else
 		{

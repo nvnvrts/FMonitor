@@ -4,10 +4,6 @@
 
 class CFMonitor2Doc : public CDocument
 {
-	HANDLE m_hFile;
-	HANDLE m_hMap;
-	LPVOID m_pBase;
-
 	CFMLogData* m_pData;
 
 protected:
@@ -15,8 +11,6 @@ protected:
 
 	CFMonitor2Doc();
 	virtual ~CFMonitor2Doc();
-
-	void CloseHandles();
 
 	enum
 	{
@@ -69,6 +63,9 @@ public:
 
 protected:
 	DECLARE_MESSAGE_MAP()
+
+public:
+	bool LoadFile(LPCTSTR lpszPathName);
 
 public:
 	virtual BOOL OnNewDocument();

@@ -225,9 +225,18 @@ CFMCfgData* CFMCfgParser::ParseData()
 
 //
 
-CFMLogData* CFMLogParser::ParseData()
+CFMLogData* CFMLogParser::ParseData(CFMLogData* pData)
 {
-	auto_ptr<CFMLogData> result(new CFMLogData());
+	auto_ptr<CFMLogData> result;
+
+	if (pData)
+	{
+		result.reset(pData);
+	}
+	else
+	{
+		result.reset(new CFMLogData());
+	}
 
 	int v = 0;
 	int h = 0;
@@ -401,8 +410,8 @@ void CLogLoader::Reset()
 {
 }
 
-CFMLogData* CLogLoader::Load(const char* pch, const size_t length)
+CFMLogData* CLogLoader::Load(const char* pch, const size_t length, CFMLogData* pData)
 {
 	CFMLogParser parser(pch, length);
-	return parser.ParseData();
+	return parser.ParseData(pData);
 }

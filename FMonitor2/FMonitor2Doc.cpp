@@ -21,10 +21,6 @@ END_MESSAGE_MAP()
 
 CFMonitor2Doc::CFMonitor2Doc()
 {
-	m_hFile = NULL;
-	m_hMap = NULL;
-	m_pBase = NULL;
-
 	m_pData = 0;
 
 	m_config.zoomFit = true;
@@ -32,7 +28,6 @@ CFMonitor2Doc::CFMonitor2Doc()
 
 CFMonitor2Doc::~CFMonitor2Doc()
 {
-	CloseHandles();
 }
 
 #ifdef _DEBUG
@@ -47,57 +42,23 @@ void CFMonitor2Doc::Dump(CDumpContext& dc) const
 }
 #endif //_DEBUG
 
-void CFMonitor2Doc::CloseHandles()
+bool CFMonitor2Doc::LoadFile(LPCTSTR lpszPathName)
 {
-	if (m_pBase)
-	{
-		UnmapViewOfFile(m_pBase);
-		m_pBase = NULL;
-	}
+	HANDLE hFile = CreateFile(lpszPathName,
+		                      GENERIC_READ,
+							  FILE_SHARE_READ,
+							  NULL,
+							  OPEN_EXISTING,
+							  FILE_FLAG_RANDOM_ACCESS,
+							  0);
 
-	if (m_hMap)
-	{
-		CloseHandle(m_hMap);
-		m_hMap = NULL;
-	}
-
-	if (m_hFile)
-	{
-		CloseHandle(m_hFile);
-		m_hFile = NULL;
-	}
-}
-
-BOOL CFMonitor2Doc::OnNewDocument()
-{
-	if (!CDocument::OnNewDocument())
+	if (hFile == INVALID_HANDLE_VALUE)
 	{
 		return FALSE;
 	}
 
-	return TRUE;
-}
-
-BOOL CFMonitor2Doc::OnOpenDocument(LPCTSTR lpszPathName)
-{
-	BOOL br = CDocument::OnOpenDocument(lpszPathName);
-	if (!br)
-	{
-		return FALSE;
-	}
-
-	m_hFile = CreateFile(lpszPathName,
-		                 GENERIC_READ,
-						 FILE_SHARE_READ,
-						 NULL,
-						 OPEN_EXISTING,
-						 FILE_FLAG_RANDOM_ACCESS,
-						 0);
-
-	if (m_hFile == INVALID_HANDLE_VALUE)
-	{
-		return FALSE;
-	}
+	HANDLE hMap = NULL;
+	LPVOID pBase = NULL;
 
 	try
 	{
@@ -108,7 +69,7 @@ BOOL CFMonitor2Doc::OnOpenDocument(LPCTSTR lpszPathName)
 			string ext = filename.substr(idx + 1);
 			if (ext == "log")
 			{
-				DWORD size = GetFileSize(m_hFile, NULL);
+				DWORD size = GetFileSize(hFile, NULL);
 				if (size == 0)
 				{
 					ostringstream oss;
@@ -118,8 +79,8 @@ BOOL CFMonitor2Doc::OnOpenDocument(LPCTSTR lpszPathName)
 					throw Error(oss.str());
 				}
 				
-				m_hMap = CreateFileMapping(m_hFile, NULL, PAGE_READONLY, 0, 0, NULL);
-				if (m_hMap == NULL)
+				hMap = CreateFileMapping(hFile, NULL, PAGE_READONLY, 0, 0, NULL);
+				if (hMap == NULL)
 				{
 					ostringstream oss;
 					oss << "can't map the file!\n\n"
@@ -130,8 +91,8 @@ BOOL CFMonitor2Doc::OnOpenDocument(LPCTSTR lpszPathName)
 					throw Error(oss.str());
 				}
 				
-				m_pBase = MapViewOfFile(m_hMap, FILE_MAP_READ, 0, 0, 0);
-				if (m_pBase == NULL)
+				pBase = MapViewOfFile(hMap, FILE_MAP_READ, 0, 0, 0);
+				if (pBase == NULL)
 				{
 					ostringstream oss;
 					oss << "can't view the file!\n\n"
@@ -143,7 +104,7 @@ BOOL CFMonitor2Doc::OnOpenDocument(LPCTSTR lpszPathName)
 				}
 
 				CLogLoader loader;
-				m_pData = loader.Load((char*)(m_pBase), size);
+				m_pData = loader.Load((char*)(pBase), size, m_pData);
 			}
 			else if (ext == "7z" || ext == "gz")
 			{
@@ -197,7 +158,7 @@ BOOL CFMonitor2Doc::OnOpenDocument(LPCTSTR lpszPathName)
 					TRACE1("(%d) byte(s) read from the pipe!\n", size);
 
 					CLogLoader loader;
-					m_pData = loader.Load(data, size);
+					m_pData = loader.Load(data, size, m_pData);
 
 					free(data);
 				}
@@ -211,16 +172,48 @@ BOOL CFMonitor2Doc::OnOpenDocument(LPCTSTR lpszPathName)
 			}
 		}
 
-		CloseHandles();
+		if (pBase) UnmapViewOfFile(pBase);
+		if (hMap) CloseHandle(hMap);
+		if (hFile) CloseHandle(hFile);
 
-		return TRUE;
+		return true;
 	}
 	catch (Error& e)
 	{
 		AfxMessageBox(e.GetReason().c_str(), MB_OK);
 
-		CloseHandles();
+		if (pBase) UnmapViewOfFile(pBase);
+		if (hMap) CloseHandle(hMap);
+		if (hFile) CloseHandle(hFile);
 
+		return false;
+	}
+}
+
+BOOL CFMonitor2Doc::OnNewDocument()
+{
+	if (!CDocument::OnNewDocument())
+	{
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+BOOL CFMonitor2Doc::OnOpenDocument(LPCTSTR lpszPathName)
+{
+	BOOL br = CDocument::OnOpenDocument(lpszPathName);
+	if (!br)
+	{
+		return FALSE;
+	}
+
+	if (LoadFile(lpszPathName))
+	{
+		return TRUE;
+	}
+	else
+	{
 		return FALSE;
 	}
 }
@@ -237,8 +230,6 @@ void CFMonitor2Doc::OnCloseDocument()
 		delete m_pData;
 		m_pData = 0;
 	}
-
-	CloseHandles();
 
 	CDocument::OnCloseDocument();
 }

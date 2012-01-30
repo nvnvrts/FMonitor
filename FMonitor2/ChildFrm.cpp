@@ -1,4 +1,7 @@
 #include "stdafx.h"
+#include <string>
+#include <vector>
+#include <algorithm>
 #include <boost/foreach.hpp>
 #include "FMonitor2.h"
 #include "FMonitor2Doc.h"
@@ -12,10 +15,15 @@
 #define new DEBUG_NEW
 #endif
 
+using namespace std;
+using namespace boost;
+
 IMPLEMENT_DYNCREATE(CChildFrame, CMDIChildWnd)
 
 BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWnd)
 	ON_WM_CREATE()
+	ON_COMMAND(ID_TOOL_FILEATTACH, &CChildFrame::OnToolFileAttach)
+	ON_UPDATE_COMMAND_UI(ID_TOOL_FILEATTACH, &CChildFrame::OnUpdateToolFileAttach)
 	ON_COMMAND(ID_TOOL_ZOOMIN, &CChildFrame::OnToolZoomIn)
 	ON_UPDATE_COMMAND_UI(ID_TOOL_ZOOMIN, &CChildFrame::OnUpdateToolZoomIn)
 	ON_COMMAND(ID_TOOL_ZOOMOUT, &CChildFrame::OnToolZoomOut)
@@ -92,6 +100,51 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	m_splitter.CreateView(0, 1, RUNTIME_CLASS(CGraphView), CSize(200, 10), pContext);
 
 	return TRUE;
+}
+
+void CChildFrame::OnToolFileAttach()
+{
+	CFileDialog dlg(TRUE,
+		            NULL,
+					NULL,
+					OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_ALLOWMULTISELECT,
+					_T("FMonitor Files (*.log;*.log.gz;*.log.7z)|*.log;*.log.gz;*.log.7z|AllFiles (*.*)|*.*||"),
+					this);
+
+	if (dlg.DoModal() == IDOK)
+	{
+		CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetActiveDocument());
+		if (doc)
+		{
+			vector<string> files;
+
+			POSITION pos = dlg.GetStartPosition();
+			do
+			{
+				CString pathname = dlg.GetNextPathName(pos);
+				files.push_back(static_cast<LPCTSTR>(pathname));
+			}
+			while (pos != NULL);
+
+			sort(files.begin(), files.end());
+
+			BOOST_FOREACH(string file, files)
+			{
+				if (doc->LoadFile(file.c_str()))
+				{
+				}
+				else
+				{
+				}
+			}
+		}
+	}
+}
+
+void CChildFrame::OnUpdateToolFileAttach(CCmdUI* pCmdUI)
+{
+	CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetActiveDocument());
+	pCmdUI->Enable(doc ? TRUE : FALSE);
 }
 
 void CChildFrame::OnToolZoomIn()

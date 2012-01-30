@@ -30,6 +30,8 @@ protected:
 
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void OnToolFileAttach();
+	afx_msg void OnUpdateToolFileAttach(CCmdUI* pCmdUI);
 	afx_msg void OnToolZoomIn();
 	afx_msg void OnUpdateToolZoomIn(CCmdUI*);
 	afx_msg void OnToolZoomOut();
