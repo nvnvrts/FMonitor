@@ -69,7 +69,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\boost\boost_1_48_0\boost;C:\Program Files\Codejock Software\MFC\Xtreme ToolkitPro v15.0.2\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\boost\boost_1_48_0;C:\Program Files\Codejock Software\MFC\Xtreme ToolkitPro v15.0.2\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -198,7 +198,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
     </ClCompile>
-    <ClCompile Include="..\..\FMonitor2\LineData.cpp" />
     <ClCompile Include="..\..\FMonitor2\LogLoader.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
@@ -211,6 +210,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
     </ClCompile>
+    <ClCompile Include="..\..\FMonitor2\Pipe.cpp" />
     <ClCompile Include="..\..\FMonitor2\SavePresetDialog.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
@@ -252,9 +252,9 @@
     <ClInclude Include="..\..\FMonitor2\FMonitor2View.h" />
     <ClInclude Include="..\..\FMonitor2\GraphCtrl.h" />
     <ClInclude Include="..\..\FMonitor2\GraphView.h" />
-    <ClInclude Include="..\..\FMonitor2\LineData.h" />
     <ClInclude Include="..\..\FMonitor2\LogLoader.h" />
     <ClInclude Include="..\..\FMonitor2\MainFrm.h" />
+    <ClInclude Include="..\..\FMonitor2\Pipe.h" />
     <ClInclude Include="..\..\FMonitor2\resource.h" />
     <ClInclude Include="..\..\FMonitor2\SavePresetDialog.h" />
     <ClInclude Include="..\..\FMonitor2\stdafx.h" />
