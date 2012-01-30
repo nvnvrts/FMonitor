@@ -198,6 +198,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
     </ClCompile>
+    <ClCompile Include="..\..\FMonitor2\LineData.cpp" />
     <ClCompile Include="..\..\FMonitor2\LogLoader.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
@@ -251,6 +252,7 @@
     <ClInclude Include="..\..\FMonitor2\FMonitor2View.h" />
     <ClInclude Include="..\..\FMonitor2\GraphCtrl.h" />
     <ClInclude Include="..\..\FMonitor2\GraphView.h" />
+    <ClInclude Include="..\..\FMonitor2\LineData.h" />
     <ClInclude Include="..\..\FMonitor2\LogLoader.h" />
     <ClInclude Include="..\..\FMonitor2\MainFrm.h" />
     <ClInclude Include="..\..\FMonitor2\resource.h" />

@@ -302,7 +302,7 @@ END
 STRINGTABLE 
 BEGIN
     IDR_MAINFRAME           "FMonitor2"
-    IDR_FMonitor2TYPE       "\nFMonitor2\nFMonitor2\nFMonitor2 Files (*.log)\n.log\nFMonitor2.Document\nFMonitor2.Document"
+    IDR_FMonitor2TYPE       "\nFMonitor2\nFMonitor2\nFMonitor2 Files (*.log;*.log.gz;*.log.7z)\n.log;.log.gz;.log.7z\nFMonitor2.Document\nFMonitor2.Document"
 END
 
 STRINGTABLE 

@@ -238,7 +238,15 @@ CFMLogData* CFMLogParser::ParseData()
 
 	while (m_count < m_length)
 	{
-		Accept('\'');
+		if (*m_current == '\'')
+		{
+			Accept('\'');
+		}
+		else
+		{
+			Next();
+			continue;
+		}
 
 		switch (*m_current)
 		{
