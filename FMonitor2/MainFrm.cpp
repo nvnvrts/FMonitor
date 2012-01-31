@@ -260,6 +260,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	{
 		m_wndToolBar.SetButtonStyle(5, TBBS_CHECKBOX);
 		m_wndToolBar.SetButtonStyle(7, TBBS_CHECKBOX);
+		m_wndToolBar.SetButtonStyle(8, TBBS_CHECKBOX);
 	}
 
 	if (!m_wndStatusBar.Create(this) || !m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT)))
