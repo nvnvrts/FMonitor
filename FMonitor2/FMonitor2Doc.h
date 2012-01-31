@@ -1,9 +1,14 @@
 #pragma once
 
+#include <string>
+#include <vector>
 #include "LogLoader.h"
+
+using namespace std;
 
 class CFMonitor2Doc : public CDocument
 {
+	vector<string> m_filepaths;
 	CFMLogData* m_pData;
 
 protected:
@@ -47,6 +52,11 @@ public:
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
+
+	vector<string> GetFilePaths() const
+	{
+		return m_filepaths;
+	}
 
 	CFMLogData* GetData()
 	{

@@ -62,7 +62,8 @@ bool CFMonitor2Doc::LoadFile(LPCTSTR lpszPathName)
 
 	try
 	{
-		string filename = lpszPathName;
+		const string filename = lpszPathName;
+
 		string::size_type idx = filename.find_last_of('.');
 		if (idx != string::npos)
 		{
@@ -105,6 +106,8 @@ bool CFMonitor2Doc::LoadFile(LPCTSTR lpszPathName)
 
 				CLogLoader loader;
 				m_pData = loader.Load((char*)(pBase), size, m_pData);
+
+				m_filepaths.push_back(filename);
 			}
 			else if (ext == "7z" || ext == "gz")
 			{
@@ -161,6 +164,8 @@ bool CFMonitor2Doc::LoadFile(LPCTSTR lpszPathName)
 					m_pData = loader.Load(data, size, m_pData);
 
 					free(data);
+
+					m_filepaths.push_back(filename);
 				}
 			}
 			else

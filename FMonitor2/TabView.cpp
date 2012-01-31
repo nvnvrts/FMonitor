@@ -2,6 +2,7 @@
 #include "FMonitor2.h"
 #include "DataTreeView.h"
 #include "ConfigTreeView.h"
+#include "FileTreeView.h"
 #include "TabView.h"
 
 #ifdef _DEBUG
@@ -86,6 +87,7 @@ int CTabView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	AddView(RUNTIME_CLASS(CDataTreeView), _T("Data"));
 	AddView(RUNTIME_CLASS(CConfigTreeView), _T("Config"));
+	AddView(RUNTIME_CLASS(CFileTreeView), _T("File"));
 
 	return 0;
 }

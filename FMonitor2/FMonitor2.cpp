@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include <string>
+#include <deque>
+#include <algorithm>
+#include <sstream>
 #include "FMonitor2.h"
 #include "MainFrm.h"
 #include "ChildFrm.h"
@@ -8,6 +12,8 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using namespace std;
 
 BEGIN_MESSAGE_MAP(CFMonitor2App, CWinApp)
 	ON_COMMAND(ID_APP_ABOUT, &CFMonitor2App::OnAppAbout)
@@ -122,5 +128,55 @@ void CFMonitor2App::OnFileNew()
 
 void CFMonitor2App::OnFileOpen()
 {
-	CWinApp::OnFileOpen();
+//	CWinApp::OnFileOpen();
+
+	CFileDialog dlg(TRUE,
+		            NULL,
+					NULL,
+					OFN_HIDEREADONLY | OFN_ALLOWMULTISELECT,
+					_T("FMonitor Files (*.log;*.log.gz;*.log.7z)|*.log;*.log.gz;*.log.7z|AllFiles (*.*)|*.*||"),
+					m_pMainWnd);
+
+	CString buf;
+	const int size = 100 * (_MAX_PATH + 1);
+	dlg.GetOFN().lpstrFile = buf.GetBuffer(size);
+	dlg.GetOFN().nMaxFile = size;
+
+	if (dlg.DoModal() == IDOK)
+	{
+		deque<string> filepaths;
+
+		POSITION pos = dlg.GetStartPosition();
+		do
+		{
+			CString pathname = dlg.GetNextPathName(pos);
+			filepaths.push_back(static_cast<LPCTSTR>(pathname));
+		}
+		while (pos != NULL);
+
+		sort(filepaths.begin(), filepaths.end());
+
+		if (!filepaths.empty())
+		{
+			const string pathname = filepaths.front();
+			filepaths.pop_front();
+
+			CFMonitor2Doc* doc = static_cast<CFMonitor2Doc*>(OpenDocumentFile(static_cast<LPCTSTR>(pathname.c_str())));
+			if (doc)
+			{
+				BOOST_FOREACH(string pathname, filepaths)
+				{
+					doc->LoadFile(pathname.c_str());
+				}
+			}
+			else
+			{
+				ostringstream oss;
+				oss << "can't open document! "
+					<< "(filepath=" << pathname << ")\n";
+
+				AfxMessageBox(oss.str().c_str(), MB_ICONEXCLAMATION | MB_OK);
+			}
+		}
+	}
 }

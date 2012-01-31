@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <sstream>
 #include <boost/foreach.hpp>
 #include "FMonitor2.h"
 #include "FMonitor2Doc.h"
@@ -113,30 +114,39 @@ void CChildFrame::OnToolFileAttach()
 					_T("FMonitor Files (*.log;*.log.gz;*.log.7z)|*.log;*.log.gz;*.log.7z|AllFiles (*.*)|*.*||"),
 					this);
 
+	CString buf;
+	const int size = 100 * (_MAX_PATH + 1);
+	dlg.GetOFN().lpstrFile = buf.GetBuffer(size);
+	dlg.GetOFN().nMaxFile = size;
+
 	if (dlg.DoModal() == IDOK)
 	{
 		CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetActiveDocument());
 		if (doc)
 		{
-			vector<string> files;
+			vector<string> filepaths;
 
 			POSITION pos = dlg.GetStartPosition();
 			do
 			{
 				CString pathname = dlg.GetNextPathName(pos);
-				files.push_back(static_cast<LPCTSTR>(pathname));
+				filepaths.push_back(static_cast<LPCTSTR>(pathname));
 			}
 			while (pos != NULL);
 
-			sort(files.begin(), files.end());
+			sort(filepaths.begin(), filepaths.end());
 
-			BOOST_FOREACH(string file, files)
+			BOOST_FOREACH(string pathname, filepaths)
 			{
-				if (doc->LoadFile(file.c_str()))
+				if (!doc->LoadFile(pathname.c_str()))
 				{
-				}
-				else
-				{
+					ostringstream oss;
+					oss << "can't open file! "
+						<< "(filepath=" << pathname << ")\n";
+
+					AfxMessageBox(oss.str().c_str(), MB_ICONEXCLAMATION | MB_OK);
+
+					break;
 				}
 			}
 		}
