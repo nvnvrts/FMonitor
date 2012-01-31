@@ -413,9 +413,10 @@ void CGraphView::OnUpdateZoomFit()
 
 			SCROLLINFO info;
 			info.cbSize = sizeof(info);
-			info.fMask = SIF_RANGE | SIF_POS;
+			info.fMask = SIF_ALL;
 			info.nMin = 0;
 			info.nMax = data->GetLength();
+			info.nPage = rect.Width() - 35;
 			info.nPos = 0;
 
 			m_scroll.SetScrollInfo(&info);
@@ -466,9 +467,10 @@ void CGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 
 			SCROLLINFO info;
 			info.cbSize = sizeof(info);
-			info.fMask = SIF_RANGE | SIF_POS;
+			info.fMask = SIF_ALL;
 			info.nMin = 0;
 			info.nMax = doc->GetData()->GetLength();
+			info.nPage = rect.Width() - 35;
 			info.nPos = curpos * ratio;
 
 			m_scroll.SetScrollInfo(&info);
