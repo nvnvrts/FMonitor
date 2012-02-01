@@ -253,8 +253,8 @@ CFMLogData* CFMLogParser::ParseData(CFMLogData* pData)
 		}
 		else
 		{
-			Next();
-			continue;
+			//Next();
+			//continue;
 		}
 
 		switch (*m_current)

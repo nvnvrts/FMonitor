@@ -11,7 +11,8 @@ using namespace std;
 
 Pipe::Pipe()
 	:m_hChildStdInputWrDup(INVALID_HANDLE_VALUE),
-	 m_hChildStdOutputRdDup(INVALID_HANDLE_VALUE)
+	 m_hChildStdOutputRdDup(INVALID_HANDLE_VALUE),
+	 m_hChildStdErrorRdDup(INVALID_HANDLE_VALUE)
 {
 }
 
@@ -32,7 +33,7 @@ bool Pipe::Open(const string& command, const string& argument)
 
 	if (!CreatePipe(&hChildStdInputRd, &hChildStdInputWr, &sa, 0))
 	{
-		throw Error("can't create pipe!");
+		throw Error("can't create pipe for stdin!");
 	}
 
 	if (!DuplicateHandle(GetCurrentProcess(),
@@ -53,7 +54,7 @@ bool Pipe::Open(const string& command, const string& argument)
 
 	if (!CreatePipe(&hChildStdOutputRd, &hChildStdOutputWr, &sa, 0))
 	{
-		throw Error("can't create pipe!");
+		throw Error("can't create pipe for stdout!");
 	}
 
 	if (!DuplicateHandle(GetCurrentProcess(),
@@ -69,6 +70,27 @@ bool Pipe::Open(const string& command, const string& argument)
 
 	CloseHandle(hChildStdOutputRd);
 
+	HANDLE hChildStdErrorRd;
+	HANDLE hChildStdErrorWr;
+
+	if (!CreatePipe(&hChildStdErrorRd, &hChildStdErrorWr, &sa, 0))
+	{
+		throw Error("can't create pipe for stderr!");
+	}
+
+	if (!DuplicateHandle(GetCurrentProcess(),
+                         hChildStdErrorRd,
+						 GetCurrentProcess(),
+						 &m_hChildStdErrorRdDup,
+						 0,
+						 FALSE,
+						 DUPLICATE_SAME_ACCESS))
+	{
+		throw Error("can't duplicate handle!");
+	}
+
+	CloseHandle(hChildStdErrorRd);
+
 	PROCESS_INFORMATION pi;
 	ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
 
@@ -78,7 +100,7 @@ bool Pipe::Open(const string& command, const string& argument)
 	si.wShowWindow = SW_HIDE;
 	si.hStdInput = hChildStdInputRd;
 	si.hStdOutput = hChildStdOutputWr;
-	si.hStdError = hChildStdOutputWr;
+	si.hStdError = hChildStdErrorWr;
 	si.dwFlags |= STARTF_USESTDHANDLES;
 
 	string cmdline = command + " " + argument;
@@ -88,7 +110,7 @@ bool Pipe::Open(const string& command, const string& argument)
 							NULL,
 							NULL,
 							TRUE,
-							0,
+							CREATE_NO_WINDOW,
 							NULL,
 							NULL,
 							&si,
@@ -100,6 +122,7 @@ bool Pipe::Open(const string& command, const string& argument)
 
 		CloseHandle(hChildStdInputRd);
 		CloseHandle(hChildStdOutputWr);
+		CloseHandle(hChildStdErrorWr);
 	}
 	else
 	{
@@ -126,6 +149,12 @@ void Pipe::Close()
 	{
 		CloseHandle(m_hChildStdOutputRdDup);
 		m_hChildStdOutputRdDup = INVALID_HANDLE_VALUE;
+	}
+
+	if (m_hChildStdErrorRdDup != INVALID_HANDLE_VALUE)
+	{
+		CloseHandle(m_hChildStdErrorRdDup);
+		m_hChildStdErrorRdDup = INVALID_HANDLE_VALUE;
 	}
 }
 
