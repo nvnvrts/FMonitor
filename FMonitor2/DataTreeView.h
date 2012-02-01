@@ -18,6 +18,8 @@ protected:
 	CDataTreeView();
 	virtual ~CDataTreeView();
 
+	void UpdateTree();
+
 public:
 #ifdef _DEBUG
 	virtual void AssertValid() const;

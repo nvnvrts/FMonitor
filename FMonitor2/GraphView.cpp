@@ -437,6 +437,12 @@ void CGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 
 	switch (lHint)
 	{
+	case CFMonitor2Doc::UPDATE_FILE_LOADED:
+		{
+			Invalidate();
+		}
+		break;
+
 	case CFMonitor2Doc::UPDATE_RESET:
 		{
 			CloseAllGraphs();
@@ -493,7 +499,9 @@ void CGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 		break;
 
 	case CFMonitor2Doc::UPDATE_ZOOM_FIT:
-		OnUpdateZoomFit();
+		{
+			OnUpdateZoomFit();
+		}
 		break;
 
 	case CFMonitor2Doc::UPDATE_SAVE_PRESET:

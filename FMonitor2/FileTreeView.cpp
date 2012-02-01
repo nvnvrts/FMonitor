@@ -57,6 +57,30 @@ void CFileTreeView::OnInitialUpdate()
 
 	GetTreeCtrl().SetFont(&m_font);
 
+	UpdateTree();
+}
+
+void CFileTreeView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
+{
+	TRACE2("file tree view update... (%u)(%u)\n", lHint, (UINT)(pHint));
+
+	switch (lHint)
+	{
+	case CFMonitor2Doc::UPDATE_FILE_LOADED:
+		{
+			UpdateTree();
+		}
+		break;
+
+	default:
+		break;
+	}
+}
+
+void CFileTreeView::UpdateTree()
+{
+	GetTreeCtrl().DeleteAllItems();
+
 	HTREEITEM root = GetTreeCtrl().InsertItem(_T("File"));
 
 	CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetDocument());
@@ -69,9 +93,4 @@ void CFileTreeView::OnInitialUpdate()
 
 	GetTreeCtrl().SortChildren(root);
 	GetTreeCtrl().Expand(root, TVE_EXPAND);
-}
-
-void CFileTreeView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
-{
-	TRACE2("file tree view update... (%u)(%u)\n", lHint, (UINT)(pHint));
 }

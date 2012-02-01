@@ -59,35 +59,7 @@ void CDataTreeView::OnInitialUpdate()
 
 	GetTreeCtrl().SetFont(&m_font);
 
-	CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetDocument());
-	CFMLogData* data = doc->GetData();
-
-	HTREEITEM root = GetTreeCtrl().InsertItem(_T("Data"));
-
-	const CFMLogData::KeyMap& keys = data->GetKeys();
-
-	BOOST_FOREACH(const CFMLogData::KeyMap::value_type& v, keys)
-	{
-		HTREEITEM parent = GetTreeCtrl().InsertItem(v.first.c_str(), root);
-
-		BOOST_FOREACH(const CFMLogData::IdxMap::value_type& w, v.second)
-		{
-			fmlog::List* list = data->GetList(w.second);
-
-			CString str;
-			str.Format("%s (%.1f)<%.1f>", w.first.c_str(), list->GetAvg(), list->GetMax());
-
-			HTREEITEM item = GetTreeCtrl().InsertItem(str, parent);
-			GetTreeCtrl().SetItemData(item, w.second);
-
-			m_items.insert(ItemMap::value_type(w.second, item));
-		}
-
-		GetTreeCtrl().SortChildren(parent);
-	}
-
-	GetTreeCtrl().SortChildren(root);
-	GetTreeCtrl().Expand(root, TVE_EXPAND);
+	UpdateTree();
 }
 
 void CDataTreeView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
@@ -99,6 +71,12 @@ void CDataTreeView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 
 	switch (lHint)
 	{
+	case CFMonitor2Doc::UPDATE_FILE_LOADED:
+		{
+			UpdateTree();
+		}
+		break;
+
 	case CFMonitor2Doc::UPDATE_ITEM_COLOR:
 		{
 			HTREEITEM item = m_items[hint->id];
@@ -256,4 +234,40 @@ void CDataTreeView::OnMenuFilter()
 			AfxMessageBox(e.GetReason().c_str(), MB_OK);
 		}
 	}
+}
+
+void CDataTreeView::UpdateTree()
+{
+	GetTreeCtrl().DeleteAllItems();
+
+	m_items.clear();
+
+	HTREEITEM root = GetTreeCtrl().InsertItem(_T("Data"));
+
+	CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetDocument());
+	CFMLogData* data = doc->GetData();
+	const CFMLogData::KeyMap& keys = data->GetKeys();
+
+	BOOST_FOREACH(const CFMLogData::KeyMap::value_type& v, keys)
+	{
+		HTREEITEM parent = GetTreeCtrl().InsertItem(v.first.c_str(), root);
+
+		BOOST_FOREACH(const CFMLogData::IdxMap::value_type& w, v.second)
+		{
+			fmlog::List* list = data->GetList(w.second);
+
+			CString str;
+			str.Format("%s (%.1f)<%.1f>", w.first.c_str(), list->GetAvg(), list->GetMax());
+
+			HTREEITEM item = GetTreeCtrl().InsertItem(str, parent);
+			GetTreeCtrl().SetItemData(item, w.second);
+
+			m_items.insert(ItemMap::value_type(w.second, item));
+		}
+
+		GetTreeCtrl().SortChildren(parent);
+	}
+
+	GetTreeCtrl().SortChildren(root);
+	GetTreeCtrl().Expand(root, TVE_EXPAND);
 }

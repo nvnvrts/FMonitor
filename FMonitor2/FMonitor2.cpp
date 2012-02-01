@@ -166,8 +166,17 @@ void CFMonitor2App::OnFileOpen()
 			{
 				BOOST_FOREACH(string pathname, filepaths)
 				{
-					doc->LoadFile(pathname.c_str());
+					if (doc->LoadFile(pathname.c_str()))
+					{
+						TRACE1("%s loaded.", pathname.c_str());
+					}
+					else
+					{
+						TRACE1("%s load failed!", pathname.c_str());
+					}
 				}
+
+				doc->UpdateAllViews(NULL, CFMonitor2Doc::UPDATE_FILE_LOADED, 0);
 			}
 			else
 			{

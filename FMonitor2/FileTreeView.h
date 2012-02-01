@@ -10,6 +10,8 @@ protected:
 	CFileTreeView();
 	virtual ~CFileTreeView();
 
+	void UpdateTree();
+
 public:
 #ifdef _DEBUG
 	virtual void AssertValid() const;
