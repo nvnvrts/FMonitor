@@ -121,6 +121,8 @@ void CChildFrame::OnToolFileAttach()
 
 	if (dlg.DoModal() == IDOK)
 	{
+		CWaitCursor wait;
+
 		CFMonitor2Doc* doc = (CFMonitor2Doc*)(GetActiveDocument());
 		if (doc)
 		{

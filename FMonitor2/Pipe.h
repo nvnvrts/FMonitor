@@ -8,6 +8,7 @@ class Pipe
 {
 	HANDLE m_hChildStdInputWrDup;
 	HANDLE m_hChildStdOutputRdDup;
+	HANDLE m_hChildStdErrorRdDup;
 
 public:
 	Pipe();

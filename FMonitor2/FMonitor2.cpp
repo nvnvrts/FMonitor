@@ -144,6 +144,8 @@ void CFMonitor2App::OnFileOpen()
 
 	if (dlg.DoModal() == IDOK)
 	{
+		CWaitCursor wait;
+
 		deque<string> filepaths;
 
 		POSITION pos = dlg.GetStartPosition();
