@@ -20,22 +20,22 @@ namespace fmlog
 		typedef pair<int, float> Item;
 		typedef vector<Item> ItemList;
 
-		float maxium;
+		float maximum;
 		float sum;
 		int count;
 
 		ItemList list;
 
-		List() : maxium(0.0f), sum(0.0f), count(0)
+		List() : maximum(0.0f), sum(0.0f), count(0)
 		{
 			list.reserve(10000);
 		}
 
 		inline void Add(int timestamp, float number)
 		{
-			if (number > maxium)
+			if (number > maximum)
 			{
-				maxium = number;
+				maximum = number;
 			}
 
 			sum += number;
@@ -46,7 +46,7 @@ namespace fmlog
 
 		float GetMax()
 		{
-			return maxium;
+			return maximum;
 		}
 
 		float GetAvg()
@@ -79,6 +79,32 @@ namespace fmlog
 		void Add(const string& key, Table* table)
 		{
 			tables[key] = table;
+		}
+
+		const Value FindValue(const string& key) const
+		{
+			ValueHash::const_iterator it = values.find(key);
+			if (it == values.end())
+			{
+				return Value();
+			}
+			else
+			{
+				return it->second;
+			}
+		}
+
+		const Table* FindTable(const string& key) const
+		{
+			TableHash::const_iterator it = tables.find(key);
+			if (it == tables.end())
+			{
+				return 0;
+			}
+			else
+			{
+				return it->second;
+			}
 		}
 	};
 }

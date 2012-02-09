@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <boost/foreach.hpp>
 #include "FMLogData.h"
 
 #ifdef _DEBUG
@@ -124,4 +125,171 @@ void CFMLogData::Normalize()
 	}
 
 	m_timeline = timeline;
+}
+
+void CFMLogData::Serialize(CArchive& ar)
+{
+	ar.WriteString("FMonitor Log Data Dump Format v0.0");
+	ar.WriteString("\n");
+
+	ar << static_cast<int>(m_keys.size());
+
+	BOOST_FOREACH(const KeyMap::value_type& key, m_keys)
+	{
+		ar.WriteString(key.first.c_str());
+		ar.WriteString("\n");
+
+		ar << static_cast<int>(key.second.size());
+
+		BOOST_FOREACH(const IdxMap::value_type& idx, key.second)
+		{
+			ar.WriteString(idx.first.c_str());
+			ar.WriteString("\n");
+
+			ar << static_cast<int>(idx.second);
+		}
+	}
+
+	ar << static_cast<int>(m_index.size());
+
+	BOOST_FOREACH(const Index::value_type& index, m_index)
+	{
+		ar << static_cast<int>(index.first);
+
+		ar.WriteString(index.second.first.c_str());
+		ar.WriteString("\n");
+
+		ar.WriteString(index.second.second.c_str());
+		ar.WriteString("\n");
+	}
+
+	ar << static_cast<int>(m_timeline.size());
+
+	BOOST_FOREACH(int timestamp, m_timeline)
+	{
+		ar << timestamp;
+	}
+
+	int numList = 0;
+
+	for (int i = 0; i < MAX_LIST_SIZE; i++)
+	{
+		const fmlog::List* list = m_lists[i];
+		if (list)
+		{
+			numList++;
+		}
+	}
+
+	ar << numList;
+
+	for (int i = 0; i < MAX_LIST_SIZE; i++)
+	{
+		const fmlog::List* list = m_lists[i];
+		if (list)
+		{
+			ar << i
+			   << list->maximum
+			   << list->sum
+			   << list->count
+			   << static_cast<int>(list->list.size());
+
+			BOOST_FOREACH(const fmlog::List::ItemList::value_type& v, list->list)
+			{
+				ar << v.first
+				   << v.second;
+			}
+		}
+	}
+}
+
+void CFMLogData::Deserialize(CArchive& ar)
+{
+	CString version;
+
+	ar.ReadString(version);
+
+	int numKeys;
+	ar >> numKeys;
+
+	for (int i = 0; i < numKeys; i++)
+	{
+		CString name;
+		ar.ReadString(name);
+
+		int numIdx;
+		ar >> numIdx;
+
+		IdxMap idxMap;
+
+		for (int j = 0; j < numIdx; j++)
+		{
+			CString str;
+			ar.ReadString(str);
+
+			int idx;
+			ar >> idx;
+
+			idxMap[str.GetString()] = idx;
+		}
+
+		m_keys[name.GetString()] = idxMap;
+	}
+
+	int numIndex;
+	ar >> numIndex;
+
+	for (int i = 0; i < numIndex; i++)
+	{
+		int idx;
+		ar >> idx;
+
+		CString key1;
+		ar.ReadString(key1);
+
+		CString key2;
+		ar.ReadString(key2);
+
+		m_index[idx] = make_pair(key1.GetString(), key2.GetString());
+	}
+
+	int sizeTimeline;
+	ar >> sizeTimeline;
+
+	m_timeline.reserve(sizeTimeline);
+
+	for (int i = 0; i < sizeTimeline; i++)
+	{
+		int timestamp;
+		ar >> timestamp;
+
+		m_timeline.push_back(timestamp);
+	}
+
+	int numList;
+	ar >> numList;
+
+	for (int i = 0; i < numList; i++)
+	{
+		int id;
+		ar >> id;
+
+		fmlog::List* list = GetList(id);
+		ar >> list->maximum >> list->sum >> list->count;
+
+		int size;
+		ar >> size;
+
+		list->list.reserve(size);
+
+		for (int j = 0; j < size; j++)
+		{
+			int timestamp;
+			float value;
+
+			ar >> timestamp >> value;
+
+			list->list.push_back(make_pair(timestamp, value));
+		}
+	}
 }

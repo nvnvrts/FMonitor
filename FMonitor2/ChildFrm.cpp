@@ -111,7 +111,7 @@ void CChildFrame::OnToolFileAttach()
 		            NULL,
 					NULL,
 					OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_ALLOWMULTISELECT,
-					_T("FMonitor Files (*.log;*.log.gz;*.log.7z)|*.log;*.log.gz;*.log.7z|AllFiles (*.*)|*.*||"),
+					_T("FMonitor Files (*.log;*.log.gz;*.log.7z;*.fml)|*.log;*.log.gz;*.log.7z;*.fml|AllFiles (*.*)|*.*||"),
 					this);
 
 	CString buf;

@@ -162,4 +162,7 @@ public:
 	{
 		return static_cast<int>(m_timeline.size());
 	}
+
+	void Serialize(CArchive& ar);
+	void Deserialize(CArchive& ar);
 };

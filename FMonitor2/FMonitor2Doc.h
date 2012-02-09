@@ -49,11 +49,6 @@ public:
 
 	Config m_config;
 
-#ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
-#endif
-
 	vector<string> GetFilePaths() const
 	{
 		return m_filepaths;
@@ -74,9 +69,6 @@ public:
 		m_config.zoomFit = enable;
 	}
 
-protected:
-	DECLARE_MESSAGE_MAP()
-
 public:
 	bool LoadFile(LPCTSTR lpszPathName);
 
@@ -86,4 +78,15 @@ public:
 	virtual BOOL OnSaveDocument(LPCTSTR lpszPathName);
 	virtual void OnCloseDocument();
 	virtual void Serialize(CArchive& ar);
+
+#ifdef _DEBUG
+	virtual void AssertValid() const;
+	virtual void Dump(CDumpContext& dc) const;
+#endif
+
+protected:
+	DECLARE_MESSAGE_MAP()
+
+public:
+	afx_msg void OnFileSaveAs();
 };

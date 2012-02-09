@@ -17,6 +17,7 @@ using namespace boost;
 IMPLEMENT_DYNCREATE(CFMonitor2Doc, CDocument)
 
 BEGIN_MESSAGE_MAP(CFMonitor2Doc, CDocument)
+	ON_COMMAND(ID_FILE_SAVE_AS, &CFMonitor2Doc::OnFileSaveAs)
 END_MESSAGE_MAP()
 
 CFMonitor2Doc::CFMonitor2Doc()
@@ -168,6 +169,21 @@ bool CFMonitor2Doc::LoadFile(LPCTSTR lpszPathName)
 					m_filepaths.push_back(filename);
 				}
 			}
+			else if (ext == "fml")
+			{
+				CFile file(hFile);
+
+				hFile = NULL;
+
+				CArchive ar(&file, CArchive::load);
+
+				m_pData = new CFMLogData();
+				m_pData->Deserialize(ar);
+
+				ar.Close();
+
+				file.Close();
+			}
 			else
 			{
 				ostringstream oss;
@@ -177,9 +193,20 @@ bool CFMonitor2Doc::LoadFile(LPCTSTR lpszPathName)
 			}
 		}
 
-		if (pBase) UnmapViewOfFile(pBase);
-		if (hMap) CloseHandle(hMap);
-		if (hFile) CloseHandle(hFile);
+		if (pBase)
+		{
+			UnmapViewOfFile(pBase);
+		}
+		
+		if (hMap)
+		{
+			CloseHandle(hMap);
+		}
+
+		if (hFile)
+		{
+			CloseHandle(hFile);
+		}
 
 		return true;
 	}
@@ -187,9 +214,20 @@ bool CFMonitor2Doc::LoadFile(LPCTSTR lpszPathName)
 	{
 		AfxMessageBox(e.GetReason().c_str(), MB_OK);
 
-		if (pBase) UnmapViewOfFile(pBase);
-		if (hMap) CloseHandle(hMap);
-		if (hFile) CloseHandle(hFile);
+		if (pBase)
+		{
+			UnmapViewOfFile(pBase);
+		}
+
+		if (hMap)
+		{
+			CloseHandle(hMap);
+		}
+
+		if (hFile)
+		{
+			CloseHandle(hFile);
+		}
 
 		return false;
 	}
@@ -225,7 +263,7 @@ BOOL CFMonitor2Doc::OnOpenDocument(LPCTSTR lpszPathName)
 
 BOOL CFMonitor2Doc::OnSaveDocument(LPCSTR lpszPathname)
 {
-	return FALSE;
+	return TRUE;
 }
 
 void CFMonitor2Doc::OnCloseDocument()
@@ -246,5 +284,90 @@ void CFMonitor2Doc::Serialize(CArchive& ar)
 	}
 	else
 	{
+	}
+}
+
+void CFMonitor2Doc::OnFileSaveAs()
+{
+	string filename;
+
+	const CFMLogData::TimeLine& timeline = m_pData->GetTimeLine();
+	if (!timeline.empty())
+	{
+		string prefix = "unknown";
+
+//		const fmlog::Table* config = m_pData->GetConfig();
+//		
+//		const fmlog::Table* master = config->FindTable("Master");
+//		if (master)
+//		{
+//			const fmlog::Value v = master->FindValue("ID");
+//			if (!v.str.empty())
+//			{
+//				prefix = string("master") + v.str;
+//			}
+//			else
+//			{
+//				const fmlog::Table* channel = config->FindTable("Channel");
+//				if (channel)
+//				{
+//					const fmlog::Value v = channel->FindValue("ID");
+//					if (!v.str.empty())
+//					{
+//						prefix = string("channel") + v.str;
+//					}
+//				}
+//			}
+//		}
+
+		CTime from(timeline.front());
+		CTime to(timeline.back());
+
+		ostringstream oss;
+
+		oss << prefix
+			<< "_"
+			<< from.Format("%Y%m%d%H%M").GetString()
+			<< "_"
+			<< to.Format("%Y%m%d%H%M").GetString();
+
+		filename = oss.str();
+	}
+
+	CFileDialog dlg(FALSE, _T("fml"), filename.c_str());
+
+	if (dlg.DoModal() == IDOK)
+	{
+		CWaitCursor wait;
+
+		string pathname = dlg.GetPathName();
+
+		string::size_type idx = pathname.find_last_of('.');
+		if (idx == string::npos)
+		{
+			pathname += ".fml";
+		}
+		else
+		{
+			pathname.replace(idx + 1, 3, "fml");
+		}
+		
+		TRACE1("serializing %s...", pathname.c_str());
+		
+		CFile file;
+		
+		if (file.Open(pathname.c_str(),CFile::modeCreate | CFile::modeWrite | CFile::typeBinary))
+		{
+			CArchive ar(&file, CArchive::store);
+			
+			m_pData->Serialize(ar);
+			
+			ar.Close();
+			
+			file.Close();
+		}
+		else
+		{
+		}
 	}
 }
