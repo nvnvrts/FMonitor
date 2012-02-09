@@ -7,6 +7,7 @@
 #include "FMCfgData.h"
 
 using namespace std;
+using namespace stdext;
 
 class CMainFrame : public CMDIFrameWnd
 {

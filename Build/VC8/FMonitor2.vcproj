@@ -288,6 +288,18 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\FMonitor2\FileTreeView.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\FMonitor2\Filter.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\FMonitor2\FilterDialog.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\FMonitor2\FMCfgData.cpp"
 				>
 				<FileConfiguration
@@ -508,6 +520,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\FMonitor2\Pipe.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\FMonitor2\SavePresetDialog.cpp"
 				>
 				<FileConfiguration
@@ -624,6 +640,18 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\FMonitor2\FileTreeView.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\FMonitor2\Filter.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\FMonitor2\FilterDialog.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\FMonitor2\FMCfgData.h"
 				>
 			</File>
@@ -661,6 +689,10 @@
 			</File>
 			<File
 				RelativePath="..\..\FMonitor2\MainFrm.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\FMonitor2\Pipe.h"
 				>
 			</File>
 			<File
