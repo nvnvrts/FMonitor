@@ -170,6 +170,15 @@ protected:
 					buf[i++] = *m_current;
 					Next();
 					continue;
+
+				case '#':
+					{
+						// temporary error handling
+						Next();
+						if (*m_current == 'R') Next();
+						return 0.0f;
+					}
+					break;
 					
 				default:
 					buf[i] = (char)(0);
